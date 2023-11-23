@@ -1,6 +1,6 @@
-import React, { useEffect, useState, useContext } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import logoWhite from '/CampusCuisine.png'
-import logoBlack from '/CampusCuisine.png'
+import logoBlack from '/CampusCuisineBlack.png'
 import { Link, NavLink } from 'react-router-dom';
 import userPicPlaceholder from '../../../assets/images/userPicPlaceHolder.png';
 import cartIcon from '../../../assets/images/cartRoundedWhite.png';
@@ -52,7 +52,7 @@ const Navbar = () => {
                 <div className="w-full relative flex items-center justify-between lg:w-auto lg:static lg:block lg:justify-start">
                     <div className='flex items-center gap-4 mr-5'>
                         <img className='h-16 dark:block hidden duration-300' src={logoWhite} alt="" />
-                        <img className='h-36 dark:hidden block duration-300' src={logoBlack} alt="" />
+                        <img className='h-16 dark:hidden block duration-300' src={logoBlack} alt="" />
                         {/* <a
                             className="text-xl xl:text-2xl font-bold leading-relaxed inline-block mr-4 py-2 whitespace-nowrap uppercase text-black dark:text-white duration-300"
                             href="/"
@@ -114,10 +114,8 @@ const Navbar = () => {
                                 </li>
                             </ul>
                         </div>
-
                         <div >
                             <ul className=" flex lg:items-center justify-center items-end flex-col lg:flex-row list-none lg:ml-auto gap-3 xl:gap-5">
-
                                 {!user && (
                                     <li>
                                         <ul className="flex items-center gap-2 md:gap-5">
@@ -128,10 +126,10 @@ const Navbar = () => {
                                                         isPending ? "pending" : isActive ? "text-[#B3845A]" : ""
                                                     }
                                                 >
-                                                    LOGIN
+                                                    JOIN US
                                                 </NavLink>
                                             </li>
-                                            <li className="nav-item px-1 xl:px-3 py-2 flex items-center text-sm xl:text-base uppercase font-semibold  text-black dark:text-white duration-300 hover:opacity-75">
+                                            {/* <li className="nav-item px-1 xl:px-3 py-2 flex items-center text-sm xl:text-base uppercase font-semibold  text-black dark:text-white duration-300 hover:opacity-75">
                                                 <NavLink
                                                     to="/register"
                                                     className={({ isActive, isPending }) =>
@@ -140,7 +138,7 @@ const Navbar = () => {
                                                 >
                                                     REGISTER
                                                 </NavLink>
-                                            </li>
+                                            </li> */}
                                         </ul>
                                     </li>
                                 )}
