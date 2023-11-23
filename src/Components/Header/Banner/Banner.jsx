@@ -77,7 +77,7 @@ const Banner = () => {
                         <div className="relative" data-te-input-wrapper-init>
                             <input
                                 type="text"
-                                className="bg-slate-100 dark:bg-zinc-800 text-black dark:text-white peer block min-h-[auto] w-[40vw]  md:px-12 px-7 md:py-4 py-2 rounded-l border dark:border-zinc-700 border-stone-200 bg-opacity-90 leading-[1.6] outline-none transition-all duration-300 ease-linear focus:placeholder:opacity-100 data-[te-input-state-active]:placeholder:opacity-100 motion-reduce:transition-none dark:placeholder:text-neutral-200 [&:not([data-te-input-placeholder-active])]:placeholder:opacity-0"
+                                className="bg-slate-100 dark:bg-[#112833] text-black dark:text-white peer block min-h-[auto] w-[40vw]  md:px-12 px-7 md:py-4 py-2 rounded-l border dark:border-zinc-700 border-stone-200 bg-opacity-90 leading-[1.6] outline-none transition-all duration-300 ease-linear focus:placeholder:opacity-100 data-[te-input-state-active]:placeholder:opacity-100 motion-reduce:transition-none dark:placeholder:text-neutral-200 [&:not([data-te-input-placeholder-active])]:placeholder:opacity-0"
                                 id="exampleFormControlInput1"
                                 placeholder="Search Here..."
                                 value={searchValue}
@@ -91,7 +91,7 @@ const Banner = () => {
                         </div>
                         <div>
                             <button
-                                className=" bg-[#19a463bb] hover:bg-[#19a463] font-primary font-semibold text-xl text-white md:px-12 px-7 md:py-4 py-2 rounded-r"
+                                className=" bg-[#B3845A] hover:bg-[#ebb587] font-primary font-semibold text-xl text-white md:px-12 px-7 md:py-4 py-2 rounded-r"
                                 onClick={handleExploreClick}
                             >
                                 Search

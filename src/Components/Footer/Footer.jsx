@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 
 
 
@@ -6,7 +7,7 @@ const Footer = () => {
     return (
         <div className="dark:border-t dark:border-gray-800 duration-300">
             <footer
-                className="flex flex-col items-center bg-slate-100 dark:bg-[#090b11] text-center text-black dark:text-white duration-300">
+                className="flex py-2 flex-col items-center bg-slate-100 dark:bg-[#090b11] text-center text-black dark:text-white duration-300">
                 <div className="container px-6 pt-6">
                     <div className="mb-6 flex justify-center">
                         <a
@@ -107,6 +108,13 @@ const Footer = () => {
                             </svg>
                         </a>
                     </div>
+                </div>
+                <div className='text-lg mb-6 font-semibold text-black font-primary dark:text-white duration-300'>
+                    <ul className='flex items-center gap-5'>
+                        <Link to={'/contact-us'}><li>Contact US</li></Link>
+                        <Link to={'/blogs'}><li>Blogs</li></Link>
+                        <Link to={'/about-us'}><li>About US</li></Link>
+                    </ul>
                 </div>
                 <div
                     className="w-full p-4 font-primary text-sm text-center text-black dark:text-white bg-[#e3e9f1] dark:bg-black duration-300">
