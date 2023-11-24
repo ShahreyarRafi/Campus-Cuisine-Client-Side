@@ -1,11 +1,7 @@
 import { useState } from 'react';
 import { motion } from "framer-motion";
-import { IoPersonOutline } from 'react-icons/io5';
-import { PiBriefcaseLight } from 'react-icons/pi';
-import { PiCalendarPlusLight } from 'react-icons/pi';
-import { PiCalendarCheckLight } from 'react-icons/pi';
-import { BsCheck2Square } from 'react-icons/bs';
-import { BsCashCoin } from 'react-icons/bs';
+import { BsStar, BsStarFill } from 'react-icons/bs';
+import { BsStarHalf } from 'react-icons/bs';
 import { Link } from "react-router-dom";
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
@@ -77,15 +73,33 @@ const MealsByCategory = ({ allMeals }) => {
                                         title="green iguana"
                                     />
                                     <CardContent>
-                                        <h5 className='text-2xl mb-2 text-slate-700'> {meal.title} </h5>
-                                        <p className='text-sm mb-2 text-slate-700'> {meal.description} </p>
+                                        <h5 className='text-2xl font-bold mb-3 text-slate-700 line-clamp-1'> {meal.title} </h5>
+                                        <p className='text- mb-3 text-slate-700 line-clamp-2'> {meal.description} </p>
                                         <p className='font-bold mb-1 text-slate-700'> Category: {meal.category} </p>
                                         <p className='font-bold mb-1 text-slate-700'> Status: {meal.meal_status} </p>
+                                        <div className='flex gap-1'>
+                                            <p className='font-bold mb-1 text-slate-700'> Ratings: </p>
+                                            <div className='flex items-center truncate'>
+                                                <div className='flex gap-[1px] -mt-[2px] mr-1'>
+                                                    {Array.from({ length: Math.min(Math.floor(meal.ratings), 5) }, (_, index) => (
+                                                        <span key={index} className="text-yellow-400"><BsStarFill /></span>
+                                                    ))}
+                                                    {meal.ratings % 1 !== 0 && (
+                                                        <span className="text-yellow-400"><BsStarHalf /> </span>
+                                                    )}
+                                                    {Array.from({ length: Math.max(5 - Math.ceil(meal.ratings), 0) }, (_, index) => (
+                                                        <span key={index} className="text-gray-400"><BsStar /></span>
+                                                    ))}
+                                                </div>
+                                                <p> {Math.min(meal.ratings, 5)} {Math.min(meal.ratings, 5) > 1 ? ("Stars") : ("star")}</p>
+                                            </div>
+                                        </div>
                                         <p className='font-bold text-slate-700'> Price: ${meal.price} </p>
                                     </CardContent>
-                                    <CardActions>
-                                        <p className='text-[#B3845A] mx-2'>Share</p>
-                                        <p className='text-[#B3845A]'>Learn More</p>
+                                    <CardActions className='w-full text-center'>
+                                        <Link className='w-full text-center' to={`meals/${meal._id}`}>
+                                            <button className='text-[#B3845A] font-bold mx-2 w-full text-center'>Show Details</button>
+                                        </Link>
                                     </CardActions>
                                 </Card>
                             </div>

@@ -32,7 +32,6 @@ const Navbar = () => {
     // default dark
     // const [theme, setTheme] = useState(userTheme === 'light' ? false : true);
 
-
     // Set the initial theme state based on the user's preference or default to dark
     const [theme, setTheme] = useState(userTheme === 'light' ? false : true);
 
@@ -143,6 +142,16 @@ const Navbar = () => {
                                     </li>
                                 )}
 
+                                <a className="nav-item lg:my-1 xl:mx-3 flex items-center text-sm xl:text-base uppercase font-semibold  text-black dark:text-white hover:opacity-75 hover:rounded-full duration-300 ">
+                                    <NavLink
+                                        to="/meals"
+                                        className={({ isActive, isPending }) =>
+                                            isPending ? "pending" : isActive ? "text-[#B3845A]" : ""
+                                        }
+                                    >
+                                        ALL MEALS
+                                    </NavLink>
+                                </a>
                                 <a className="nav-item lg:my-1 xl:mx-3 flex items-center text-sm xl:text-base uppercase font-semibold  text-black dark:text-white hover:opacity-75 border-2 border-[#B3845A] rounded-md hover:rounded-full duration-300 ">
                                     <NavLink
                                         to="/add-product"

@@ -8,6 +8,9 @@ import ContactUsPage from "../Pages/ContactUsPage/ContactUsPage";
 import CartPage from "../Pages/CartPage/CartPage";
 import ErrorPage from "../Pages/ErrorPage/ErrorPage";
 import AboutUsPage from "../Pages/AboutUsPage/AboutUsPage";
+import Details from "../Components/Details/Details";
+import DetailsPage from "../Pages/DetailsPage/DetailsPage";
+import AllMealsPage from "../Pages/AllMealsPage/AllMealsPage";
 
 
 
@@ -40,6 +43,16 @@ const router = createBrowserRouter([
             {
                 path: 'about-us',
                 element: <AboutUsPage></AboutUsPage>
+            },
+            {
+                path: 'meals',
+                element: <AllMealsPage></AllMealsPage>,
+                loader: () => fetch('http://localhost:5000/meals')
+            },
+            {
+                path: 'meals/:id',
+                element: <DetailsPage></DetailsPage>,
+                loader: ({ params }) => fetch(`http://localhost:5000/meals/${params.id}`)
             },
             {
                 path: 'cart',
