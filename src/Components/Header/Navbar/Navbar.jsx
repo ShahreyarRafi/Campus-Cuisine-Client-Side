@@ -144,6 +144,16 @@ const Navbar = () => {
 
                                 <a className="nav-item lg:my-1 xl:mx-3 flex items-center text-sm xl:text-base uppercase font-semibold  text-black dark:text-white hover:opacity-75 hover:rounded-full duration-300 ">
                                     <NavLink
+                                        to="/upcoming"
+                                        className={({ isActive, isPending }) =>
+                                            isPending ? "pending" : isActive ? "text-[#B3845A]" : ""
+                                        }
+                                    >
+                                        UPCOMING
+                                    </NavLink>
+                                </a>
+                                <a className="nav-item lg:my-1 xl:mx-3 flex items-center text-sm xl:text-base uppercase font-semibold  text-black dark:text-white hover:opacity-75 hover:rounded-full duration-300 ">
+                                    <NavLink
                                         to="/meals"
                                         className={({ isActive, isPending }) =>
                                             isPending ? "pending" : isActive ? "text-[#B3845A]" : ""

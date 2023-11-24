@@ -123,7 +123,6 @@ const AllMeals = ({ allMeals }) => {
                 <div className="font-primary max-w-[1500px] w-full py-10 px-10 mx-auto duration-300">
                     <body className="flex items-center justify-center">
                         <div className="container duration-300">
-
                             <div>
                                 <div className="w-full grid grid-cols-4 gap-7">
                                     {filteredMeals.map((meal, index) => (
@@ -159,7 +158,7 @@ const AllMeals = ({ allMeals }) => {
                                                     <p className='font-bold text-slate-700'> Price: ${meal.price} </p>
                                                 </CardContent>
                                                 <CardActions className='w-full text-center'>
-                                                    <Link className='w-full text-center' to={`${meal._id}`}>
+                                                    <Link className='w-full text-center' to={`/meals/${meal._id}`}>
                                                         <button className='text-[#B3845A] font-bold mx-2 w-full text-center'>Show Details</button>
                                                     </Link>
                                                 </CardActions>

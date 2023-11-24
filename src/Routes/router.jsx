@@ -11,6 +11,7 @@ import AboutUsPage from "../Pages/AboutUsPage/AboutUsPage";
 import Details from "../Components/Details/Details";
 import DetailsPage from "../Pages/DetailsPage/DetailsPage";
 import AllMealsPage from "../Pages/AllMealsPage/AllMealsPage";
+import UpcomingPage from "../Pages/UpcomingPage/UpcomingPage";
 
 
 
@@ -48,6 +49,10 @@ const router = createBrowserRouter([
                 path: 'meals',
                 element: <AllMealsPage></AllMealsPage>,
                 loader: () => fetch('http://localhost:5000/meals')
+            },
+            {
+                path: 'upcoming',
+                element: <UpcomingPage></UpcomingPage>,
             },
             {
                 path: 'meals/:id',
