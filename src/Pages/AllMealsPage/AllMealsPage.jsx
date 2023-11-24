@@ -3,11 +3,11 @@ import AllMeals from '../../Components/AllMeals/AllMeals';
 
 const AllMealsPage = () => {
 
-    const allmeals = useLoaderData()
+    const allMeals = useLoaderData()
 
     return (
         <div>
-            <AllMeals allmeals={allmeals}></AllMeals>
+            <AllMeals allMeals={allMeals}></AllMeals>
         </div>
     );
 };

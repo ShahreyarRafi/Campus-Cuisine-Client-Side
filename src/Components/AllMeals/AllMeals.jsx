@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { BsStar, BsStarFill, BsStarHalf } from 'react-icons/bs';
 import { Link } from 'react-router-dom';
 import Card from '@mui/material/Card';
@@ -14,28 +14,71 @@ let tabs = [
     { id: "Dinner", label: "Dinner" },
 ];
 
-
-
-
-const AllMeals = ({ allmeals }) => {
+const AllMeals = ({ allMeals }) => {
     const [searchValue, setSearchValue] = useState('');
-    const [filteredmeals, setFilteredMeals] = useState(allmeals);
+    const [filteredMeals, setFilteredMeals] = useState([]);
     const [activeTab, setActiveTab] = useState('All');
+    const [currentPage, setCurrentPage] = useState(1);
+    const [loading, setLoading] = useState(false);
+
+    const handleScroll = useCallback(() => {
+        if (
+          window.innerHeight + document.documentElement.scrollTop + 100 >=
+          document.documentElement.offsetHeight &&
+          !loading
+        ) {
+          // Fetch all data here
+          setLoading(true);
+    
+          // Simulating data fetching for demonstration purposes
+          const allData = allMeals;
+    
+          setFilteredMeals((prevMeals) => [...prevMeals, ...allData]);
+          setLoading(false);
+    
+          // Update the current page number
+          setCurrentPage((prevPage) => prevPage + 1);
+        }
+      }, [loading, allMeals]);
+    
+      
+    useEffect(() => {
+        const fetchData = async () => {
+            setLoading(true);
+
+            // Simulating data fetching for demonstration purposes
+            const startIndex = (currentPage - 1) * 4;
+            const endIndex = startIndex + 4;
+            const moreData = allMeals.slice(startIndex, endIndex);
+
+            setFilteredMeals((prevMeals) => [...prevMeals, ...moreData]);
+
+            setLoading(false);
+        };
+
+        fetchData();
+    }, [currentPage, allMeals]);
 
     useEffect(() => {
-        // Filter meals based on the selected category
-        const filtered = allmeals.filter(
+        window.addEventListener('scroll', handleScroll);
+
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+        };
+    }, [handleScroll]);
+
+    useEffect(() => {
+        const filtered = allMeals.filter(
             (meal) =>
                 activeTab === 'All' || meal.category.toLowerCase() === activeTab.toLowerCase()
         );
 
-        // Filter meals based on the search input
         const searchFiltered = filtered.filter((meal) =>
             meal.title.toLowerCase().includes(searchValue.toLowerCase())
         );
 
         setFilteredMeals(searchFiltered);
-    }, [allmeals, activeTab, searchValue]);
+    }, [activeTab, searchValue, allMeals]);
 
     return (
         <div>
@@ -80,9 +123,10 @@ const AllMeals = ({ allmeals }) => {
                 <div className="font-primary max-w-[1500px] w-full py-10 px-10 mx-auto duration-300">
                     <body className="flex items-center justify-center">
                         <div className="container duration-300">
+
                             <div>
                                 <div className="w-full grid grid-cols-4 gap-7">
-                                    {filteredmeals.map((meal) => (
+                                    {filteredMeals.map((meal, index) => (
                                         <div key={meal._id}>
                                             <Card sx={{ maxWidth: 345 }}>
                                                 <CardMedia
@@ -122,6 +166,7 @@ const AllMeals = ({ allmeals }) => {
                                             </Card>
                                         </div>
                                     ))}
+                                    {loading && <p>Loading...</p>}
                                 </div>
                             </div>
                         </div>
