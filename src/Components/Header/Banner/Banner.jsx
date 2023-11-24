@@ -74,7 +74,7 @@ const Banner = () => {
                     </h2>
                     <p className='text-gray-200 text-base font-primary text-center lg:text-lg max-w-5xl mb-7 md:mb-14 px-10'>Campus Cuisine is committed to providing students with the nutrients they need to succeed.</p>
                     <div className='w-full flex items-center justify-center'>
-                        <div className="relative" data-te-input-wrapper-init>
+                        <div className="relative shadow-lg" data-te-input-wrapper-init>
                             <input
                                 type="text"
                                 className="bg-slate-100 dark:bg-[#112833] text-black dark:text-white peer block min-h-[auto] w-[40vw]  md:px-12 px-7 md:py-4 py-2 rounded-l border dark:border-zinc-700 border-stone-200 bg-opacity-90 leading-[1.6] outline-none transition-all duration-300 ease-linear focus:placeholder:opacity-100 data-[te-input-state-active]:placeholder:opacity-100 motion-reduce:transition-none dark:placeholder:text-neutral-200 [&:not([data-te-input-placeholder-active])]:placeholder:opacity-0"

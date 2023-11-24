@@ -7,7 +7,7 @@ import ScrollToTop from "../Components/ScrollToTop/ScrollToTop";
 const Root = () => {
     return (
         <div>
-            <div className="fixed top-0 w-full z-50">
+            <div className="fixed top-0 w-full z-50 shadow-lg">
                 <Navbar></Navbar>
             </div>
             <div className="mt-[87px]">
