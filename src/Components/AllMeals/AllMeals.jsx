@@ -159,7 +159,7 @@ const AllMeals = ({ allMeals }) => {
                                                     <p className='font-bold text-slate-700'> Price: ${meal.price} </p>
                                                 </CardContent>
                                                 <CardActions className='w-full text-center'>
-                                                    <Link className='w-full text-center' to={`meals/${meal._id}`}>
+                                                    <Link className='w-full text-center' to={`${meal._id}`}>
                                                         <button className='text-[#B3845A] font-bold mx-2 w-full text-center'>Show Details</button>
                                                     </Link>
                                                 </CardActions>
