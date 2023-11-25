@@ -4,10 +4,17 @@ import { Input, Ripple, initTE } from "tw-elements";
 import { AuthContext } from '../../services/Firebase/AuthProvider';
 import { Link } from 'react-router-dom';
 import swal from 'sweetalert';
+import { useForm } from 'react-hook-form';
 
 initTE({ Input, Ripple });
 
 const Register = () => {
+    const { register, handleSubmit, formState: { errors }, } = useForm()
+    const onSubmit = (data) => {
+        console.log(data)
+    };
+
+
     const { signUp, googleSignIn } = useContext(AuthContext);
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
@@ -22,7 +29,27 @@ const Register = () => {
             setError("");
             if (email) {
                 try {
+                    // Sign up the user
                     await signUp(email, password, name, photoUrl);
+
+                    // Send user data to the server
+                    const response = await fetch('http://localhost:5000/user', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            email,
+                            name,
+                            photoUrl,
+                            badge: "Bronze",
+                        }),
+                    });
+
+                    // Handle the API response
+                    const result = await response.json();
+                    console.log(result);
+
                     swal({
                         title: "Congratulations!",
                         text: "Registration successful!",
@@ -35,7 +62,7 @@ const Register = () => {
                 }
             }
         }
-    }
+    };
 
     return (
         <div className='w-full'>
@@ -57,15 +84,18 @@ const Register = () => {
                                                 </h4>
                                             </div>
 
-                                            <form>
+                                            <form onSubmit={handleSubmit(onSubmit)}>
                                                 <p className="mb-4 text-black dark:text-neutral-100 duration-300">Please register an account</p>
                                                 <div className="relative mb-4" data-te-input-wrapper-init>
                                                     <input
+                                                        {...register("name", { required: true })}
                                                         onChange={(event) => setName(event.target.value)}
                                                         type="text"
                                                         className="bg-slate-200 dark:bg-zinc-800  text-black dark:text-white peer block min-h-[auto] w-full rounded border dark:border-zinc-700 border-stone-200 bg-transparent px-3 py-[0.32rem] leading-[1.6] outline-none transition-all duration-200 ease-linear focus:placeholder:opacity-100 data-[te-input-state-active]:placeholder:opacity-100 motion-reduce:transition-none dark:placeholder:text-neutral-200 [&:not([data-te-input-placeholder-active])]:placeholder:opacity-0"
                                                         id="exampleFormControlInput1"
                                                         placeholder="Name" />
+                                                        {errors.name && <span className='text-red-600'>Name is required</span>}
+
                                                     <label
                                                         htmlFor="exampleFormControlInput1"
                                                         className="pointer-events-none absolute left-3 top-0 mb-0 max-w-[90%] origin-[0_0] truncate pt-[0.37rem] leading-[1.6] text-neutral-400 transition-all duration-200 ease-out peer-focus:-translate-y-[0.9rem] peer-focus:scale-[0.8] peer-focus:text-primary peer-data-[te-input-state-active]:-translate-y-[0.9rem] peer-data-[te-input-state-active]:scale-[0.8] motion-reduce:transition-none dark:text-neutral-200 dark:peer-focus:text-primary"
@@ -74,11 +104,13 @@ const Register = () => {
                                                 </div>
                                                 <div className="relative mb-4" data-te-input-wrapper-init>
                                                     <input
+                                                        {...register("email", { required: true })}
                                                         onChange={(event) => setEmail(event.target.value)}
                                                         type="email"
                                                         className="bg-slate-200 dark:bg-zinc-800  text-black dark:text-white peer block min-h-[auto] w-full rounded border dark:border-zinc-700 border-stone-200 bg-transparent px-3 py-[0.32rem] leading-[1.6] outline-none transition-all duration-200 ease-linear focus:placeholder:opacity-100 data-[te-input-state-active]:placeholder:opacity-100 motion-reduce:transition-none dark:placeholder:text-neutral-200 [&:not([data-te-input-placeholder-active])]:placeholder:opacity-0"
                                                         id="exampleFormControlInput1"
                                                         placeholder="Username" />
+                                                        {errors.email && <span className='text-red-600'>Email is required</span>}
                                                     <label
                                                         htmlFor="exampleFormControlInput1"
                                                         className="pointer-events-none absolute left-3 top-0 mb-0 max-w-[90%] origin-[0_0] truncate pt-[0.37rem] leading-[1.6] text-neutral-400 transition-all duration-200 ease-out peer-focus:-translate-y-[0.9rem] peer-focus:scale-[0.8] peer-focus:text-primary peer-data-[te-input-state-active]:-translate-y-[0.9rem] peer-data-[te-input-state-active]:scale-[0.8] motion-reduce:transition-none dark:text-neutral-200 dark:peer-focus:text-primary"
@@ -87,11 +119,13 @@ const Register = () => {
                                                 </div>
                                                 <div className="relative mb-4" data-te-input-wrapper-init>
                                                     <input
+                                                        {...register("password", { required: true, minLength: 6, maxLength: 20 })}
                                                         onChange={(event) => setPassword(event.target.value)}
                                                         type="password"
                                                         className="bg-slate-200 dark:bg-zinc-800  text-black dark:text-white peer block min-h-[auto] w-full rounded border dark:border-zinc-700 border-stone-200 bg-transparent px-3 py-[0.32rem] leading-[1.6] outline-none transition-all duration-200 ease-linear focus:placeholder:opacity-100 data-[te-input-state-active]:placeholder:opacity-100 motion-reduce:transition-none dark:placeholder:text-neutral-200 [&:not([data-te-input-placeholder-active])]:placeholder:opacity-0"
                                                         id="exampleFormControlInput11"
                                                         placeholder="Password" />
+                                                        {errors.password && <span className='text-red-600'>Password is required</span>}
                                                     <label
                                                         htmlFor="exampleFormControlInput11"
                                                         className="pointer-events-none absolute left-3 top-0 mb-0 max-w-[90%] origin-[0_0] truncate pt-[0.37rem] leading-[1.6] text-neutral-400 transition-all duration-200 ease-out peer-focus:-translate-y-[0.9rem] peer-focus:scale-[0.8] peer-focus:text-primary peer-data-[te-input-state-active]:-translate-y-[0.9rem] peer-data-[te-input-state-active]:scale-[0.8] motion-reduce:transition-none dark:text-neutral-200 dark:peer-focus:text-primary"
@@ -100,11 +134,13 @@ const Register = () => {
                                                 </div>
                                                 <div className="relative mb-4" data-te-input-wrapper-init>
                                                     <input
+                                                        {...register("photoUrl", { required: true })}
                                                         onChange={(event) => setPhotoUrl(event.target.value)}
                                                         type="text"
                                                         className="bg-slate-200 dark:bg-zinc-800  text-black dark:text-white peer block min-h-[auto] w-full rounded border dark:border-zinc-700 border-stone-200 bg-transparent px-3 py-[0.32rem] leading-[1.6] outline-none transition-all duration-200 ease-linear focus:placeholder:opacity-100 data-[te-input-state-active]:placeholder:opacity-100 motion-reduce:transition-none dark:placeholder:text-neutral-200 [&:not([data-te-input-placeholder-active])]:placeholder:opacity-0"
                                                         id="exampleFormControlInput1"
                                                         placeholder="Photo URL" />
+                                                        {errors.photoUrl && <span className='text-red-600'>Photo URL is required</span>}
                                                     <label
                                                         htmlFor="exampleFormControlInput1"
                                                         className="pointer-events-none absolute left-3 top-0 mb-0 max-w-[90%] origin-[0_0] truncate pt-[0.37rem] leading-[1.6] text-neutral-400 transition-all duration-200 ease-out peer-focus:-translate-y-[0.9rem] peer-focus:scale-[0.8] peer-focus:text-primary peer-data-[te-input-state-active]:-translate-y-[0.9rem] peer-data-[te-input-state-active]:scale-[0.8] motion-reduce:transition-none dark:text-neutral-200 dark:peer-focus:text-primary"
@@ -114,13 +150,18 @@ const Register = () => {
                                                 <div className="mb-6 pb-1 pt-1 text-center">
                                                     <button
                                                         className=" bg-[#B3845A] rounded mb-4 inline-block w-full px-6 pb-2 pt-2.5 text-sm font-semibold uppercase leading-normal text-white shadow-[0_4px_9px_-4px_rgba(0,0,0,0.2)] transition duration-150 ease-in-out hover:shadow-[0_8px_9px_-4px_rgba(0,0,0,0.1),0_4px_18px_0_rgba(0,0,0,0.2)] focus:shadow-[0_8px_9px_-4px_rgba(0,0,0,0.1),0_4px_18px_0_rgba(0,0,0,0.2)] focus:outline-none focus:ring-0 active:shadow-[0_8px_9px_-4px_rgba(0,0,0,0.1),0_4px_18px_0_rgba(0,0,0,0.2)]"
-                                                        type="button"
+                                                        type="submit"
                                                         onClick={handleRegister}
                                                         data-te-ripple-init
                                                         data-te-ripple-color="light"
                                                     >
                                                         SIGN UP
                                                     </button>
+                                                    {/* <input
+                                                        type="submit"
+                                                        value="Register"
+                                                        className="btn hover-bg-[#ffc362] w-full text-white text-lg bg-[#19a463] hover:bg-[#19a463bb]"
+                                                    /> */}
                                                     <div>
                                                         <p className='text-red-500 my-5 px-20'>{error}</p>
                                                     </div>
