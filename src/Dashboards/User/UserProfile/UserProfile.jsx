@@ -3,8 +3,14 @@ import { AuthContext } from "../../../services/Firebase/AuthProvider";
 import userPicPlaceholder from '../../../assets/images/userPicPlaceHolder.png';
 import { useQuery } from "react-query";
 import useAxiosPublic from "../../../Hook/useAxiosPublic/useAxiosPublic"
+import bronze from "../../../assets/images/Bronze.png"
+import silver from "../../../assets/images/Silver.png"
+import gold from "../../../assets/images/gold.png"
+import platinum from "../../../assets/images/Platinum.png"
 
 const UserProfile = () => {
+
+
 
     const { user } = useContext(AuthContext);
 
@@ -21,12 +27,34 @@ const UserProfile = () => {
     const { data: users = [] } = useQuery({
         queryKey: ['users'],
         queryFn: async () => {
-            const res = await axiosSecure.get(`/users/${user?.email}`);
+            // const res = await axiosSecure.get(`/users/${user?.email}`);
+            const res = await axiosSecure.get(`/users`);
             return res.data;
         }
     })
 
-    // const { badge } = users[0];
+    const currentUser = users.find(user => user.email === user?.email);
+
+    let badgeImage;
+    switch (currentUser?.badge) {
+        case 'Bronze':
+            badgeImage = bronze;
+            break;
+        case 'Silver':
+            badgeImage = silver;
+            break;
+        case 'Gold':
+            badgeImage = gold;
+            break;
+        case 'Platinum':
+            badgeImage = platinum;
+            break;
+        default:
+            badgeImage = null; // Handle other cases if needed
+            break;
+    }
+
+
 
     return (
         <div className='w-full h-[69vh] flex justify-center items-center font-primary'>
@@ -48,16 +76,19 @@ const UserProfile = () => {
                 </div>
                 <div>
                     <div>
-                        <p className="text-black text-lg text-center"><span className="font-bold">Name:</span> {user?.displayName}</p>
+                        <p className="text-black text-lg text-center"><span className="font-bold">Name: </span> {user?.displayName}</p>
                     </div>
                     <div className="divider"></div>
                     <div>
                         <p className="text-black text-lg text-center"><span className="font-bold">Email: </span> {user?.email}</p>
                     </div>
                     <div className="divider"></div>
-                    {/* <div>
-                    <p className="text-black text-lg text-center">Badge: {badge}</p>
-                </div> */}
+                    <div className=" flex justify-center items-center gap-1">
+                        <div>
+                            <p className="text-black text-lg text-center"><span className="font-bold">Badge: </span> {currentUser?.badge}</p>
+                        </div>
+                        <img className="w-5" src={badgeImage} alt="Badge" />
+                    </div>
                 </div>
             </div>
         </div>
