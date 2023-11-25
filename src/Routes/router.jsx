@@ -12,6 +12,10 @@ import Details from "../Components/Details/Details";
 import DetailsPage from "../Pages/DetailsPage/DetailsPage";
 import AllMealsPage from "../Pages/AllMealsPage/AllMealsPage";
 import UpcomingPage from "../Pages/UpcomingPage/UpcomingPage";
+import UserDashboard from "../Dashboards/User/UserDashboard/UserDashboard";
+import UserProfile from "../Dashboards/User/UserProfile/UserProfile";
+import UserRequestedMeals from "../Dashboards/User/UserRequestedMeals/UserRequestedMeals";
+import UserReviews from "../Dashboards/User/UserReviews/UserReviews";
 
 
 
@@ -58,6 +62,22 @@ const router = createBrowserRouter([
                 path: 'meals/:id',
                 element: <DetailsPage></DetailsPage>,
                 loader: ({ params }) => fetch(`http://localhost:5000/meals/${params.id}`)
+            },
+            {
+                path: 'user/dashboard',
+                element: <UserDashboard></UserDashboard>
+            },
+            {
+                path: 'user/profile',
+                element: <UserProfile></UserProfile>
+            },
+            {
+                path: 'user/requested-meals',
+                element: <UserRequestedMeals></UserRequestedMeals>
+            },
+            {
+                path: 'user/reviews',
+                element: <UserReviews></UserReviews>
             },
             {
                 path: 'cart',
