@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { BsStar, BsStarFill, BsStarHalf } from 'react-icons/bs';
 import { Link } from 'react-router-dom';
 import Card from '@mui/material/Card';
@@ -6,79 +6,59 @@ import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 
-
 let tabs = [
-    { id: "All", label: "All Meals" },
-    { id: "Breakfast", label: "Breakfast" },
-    { id: "Lunch", label: "Lunch" },
-    { id: "Dinner", label: "Dinner" },
+  { id: "All", label: "All Meals" },
+  { id: "Breakfast", label: "Breakfast" },
+  { id: "Lunch", label: "Lunch" },
+  { id: "Dinner", label: "Dinner" },
 ];
 
 const AllMeals = ({ allMeals }) => {
-    const [searchValue, setSearchValue] = useState('');
-    const [filteredMeals, setFilteredMeals] = useState([]);
-    const [activeTab, setActiveTab] = useState('All');
-    const [currentPage, setCurrentPage] = useState(1);
-    const [loading, setLoading] = useState(false);
+  const [searchValue, setSearchValue] = useState('');
+  const [filteredMeals, setFilteredMeals] = useState([]);
+  const [activeTab, setActiveTab] = useState('All');
+  const [pageNumber, setPageNumber] = useState(1);
 
-    const handleScroll = useCallback(() => {
-        if (
-          window.innerHeight + document.documentElement.scrollTop + 100 >=
-          document.documentElement.offsetHeight &&
-          !loading
-        ) {
-          // Fetch all data here
-          setLoading(true);
-    
-          // Simulating data fetching for demonstration purposes
-          const allData = allMeals;
-    
-          setFilteredMeals((prevMeals) => [...prevMeals, ...allData]);
-          setLoading(false);
-    
-          // Update the current page number
-          setCurrentPage((prevPage) => prevPage + 1);
-        }
-      }, [loading, allMeals]);
-    
-      
-    useEffect(() => {
-        const fetchData = async () => {
-            setLoading(true);
+  useEffect(() => {
+    // Function to load more meals when scrolling down
+    const loadMoreMeals = () => {
+      // Check if the user has scrolled to the bottom
+      if (
+        window.innerHeight + document.documentElement.scrollTop ===
+        document.documentElement.offsetHeight
+      ) {
+        // Increment the page number and fetch more meals
+        setPageNumber((prevPageNumber) => prevPageNumber + 1);
+      }
+    };
 
-            // Simulating data fetching for demonstration purposes
-            const startIndex = (currentPage - 1) * 4;
-            const endIndex = startIndex + 4;
-            const moreData = allMeals.slice(startIndex, endIndex);
+    // Add the event listener for scrolling
+    window.addEventListener('scroll', loadMoreMeals);
 
-            setFilteredMeals((prevMeals) => [...prevMeals, ...moreData]);
+    // Remove the event listener when the component unmounts
+    return () => {
+      window.removeEventListener('scroll', loadMoreMeals);
+    };
+  }, []);
 
-            setLoading(false);
-        };
+  useEffect(() => {
+    // Filter meals based on the selected category
+    const filtered = allMeals.filter(
+      (meal) =>
+        activeTab === 'All' || meal.category.toLowerCase() === activeTab.toLowerCase()
+    );
 
-        fetchData();
-    }, [currentPage, allMeals]);
+    // Filter meals based on the search input
+    const searchFiltered = filtered.filter((meal) =>
+      meal.title.toLowerCase().includes(searchValue.toLowerCase())
+    );
 
-    useEffect(() => {
-        window.addEventListener('scroll', handleScroll);
+    // Slice the array to get only the meals for the current page
+    const slicedMeals = searchFiltered.slice(0, pageNumber * 10);
 
-        return () => {
-            window.removeEventListener('scroll', handleScroll);
-        };
-    }, [handleScroll]);
+    setFilteredMeals(slicedMeals);
+  }, [allMeals, activeTab, searchValue, pageNumber]);
 
-    useEffect(() => {
-        const filtered = allMeals.filter(
-            (meal) =>
-                activeTab === 'All' || meal.category.toLowerCase() === activeTab.toLowerCase()
-        );
-
-        const searchFiltered = filtered.filter((meal) =>
-            meal.title.toLowerCase().includes(searchValue.toLowerCase())
-        );
-
-        setFilteredMeals(searchFiltered);
-    }, [activeTab, searchValue, allMeals]);
 
     return (
         <div>
@@ -125,7 +105,7 @@ const AllMeals = ({ allMeals }) => {
                         <div className="container duration-300">
                             <div>
                                 <div className="w-full grid grid-cols-4 gap-7">
-                                    {filteredMeals.map((meal, index) => (
+                                    {filteredMeals.map((meal) => (
                                         <div key={meal._id}>
                                             <Card sx={{ maxWidth: 345 }}>
                                                 <CardMedia
@@ -158,14 +138,13 @@ const AllMeals = ({ allMeals }) => {
                                                     <p className='font-bold text-slate-700'> Price: ${meal.price} </p>
                                                 </CardContent>
                                                 <CardActions className='w-full text-center'>
-                                                    <Link className='w-full text-center' to={`/meals/${meal._id}`}>
+                                                    <Link className='w-full text-center' to={`meals/${meal._id}`}>
                                                         <button className='text-[#B3845A] font-bold mx-2 w-full text-center'>Show Details</button>
                                                     </Link>
                                                 </CardActions>
                                             </Card>
                                         </div>
                                     ))}
-                                    {loading && <p>Loading...</p>}
                                 </div>
                             </div>
                         </div>
