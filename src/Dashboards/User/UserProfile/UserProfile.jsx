@@ -23,15 +23,16 @@ const UserProfile = () => {
     // })
     // console.log(data);
 
-    const axiosSecure = useAxiosPublic();
+    const axiosPublic = useAxiosPublic();
     const { data: users = [] } = useQuery({
         queryKey: ['users'],
         queryFn: async () => {
             // const res = await axiosSecure.get(`/users/${user?.email}`);
-            const res = await axiosSecure.get(`/users`);
+            const res = await axiosPublic.get(`/users`);
             return res.data;
         }
     })
+
 
     const currentUser = users.find(user => user.email === user?.email);
 

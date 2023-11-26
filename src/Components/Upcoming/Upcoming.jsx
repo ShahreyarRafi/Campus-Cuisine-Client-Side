@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery } from 'react-query';
 import { Link } from 'react-router-dom';
 import { BsStar, BsStarFill, BsStarHalf } from 'react-icons/bs';
 import { CircularProgress } from '@mui/material';
@@ -31,7 +31,7 @@ const Upcoming = () => {
                     <span className="">Meals</span>
                 </h1>
                 <div className='w-full grid grid-cols-4 gap-7'>
-                    {upcoming.map((meal) => (
+                    {upcoming?.map((meal) => (
                         <div key={meal._id}>
                             <Card sx={{ maxWidth: 345 }}>
                                 <CardMedia
