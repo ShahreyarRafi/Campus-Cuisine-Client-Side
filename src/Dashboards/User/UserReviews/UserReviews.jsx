@@ -7,6 +7,10 @@ const UserReviews = () => {
 
     const [logs, setLogs] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [currentReview, setCurrentReview] = useState(null);
+
+    console.log(currentReview);
+
 
     useEffect(() => {
         const fetchData = async () => {
@@ -59,13 +63,55 @@ const UserReviews = () => {
             // Update the local state to reflect the deleted review
             setLogs((prevLogs) =>
                 prevLogs.map((log) => ({
-                    reviews: log.reviews.filter((review) => !(review.meal_id === mealId && review.review_id === reviewId)),
+                    reviews: log.reviews.filter((review) => !(review?.meal_id === mealId && review.review_id === reviewId)),
                 }))
             );
         } catch (error) {
             console.error('Error deleting review:', error);
         }
     };
+
+    const handleEditReview = (review) => {
+        setCurrentReview(review); // Set the current review when editing
+        const modal = document.getElementById('editReviewModal');
+        if (modal) {
+            modal.showModal();
+        }
+    };
+
+    // Function to handle updating the review
+    const handleUpdateReview = async (ratings, reviewText) => {
+        try {
+            const axiosPublic = useAxiosPublic();
+
+            // Adjust the API endpoint based on your server implementation
+            await axiosPublic.put(`/meals/${currentReview?.meal_id}/reviews/${currentReview.review_id}`, {
+                ratings,
+                review_text: reviewText,
+            });
+
+            // Update the local state to reflect the updated review
+            setLogs((prevLogs) =>
+                prevLogs.map((log) => ({
+                    reviews: log.reviews.map((review) =>
+                        review?.meal_id === currentReview?.meal_id && review?.review_id === currentReview.review_id
+                            ? { ...review, ratings, review_text: reviewText }
+                            : review
+                    ),
+                }))
+            );
+
+            // Close the modal after updating
+            const modal = document.getElementById('editReviewModal');
+            if (modal) {
+                modal.close();
+            }
+        } catch (error) {
+            console.error('Error updating review:', error);
+        }
+    };
+
+
 
     return (
         <div className='font-primary'>
@@ -84,31 +130,101 @@ const UserReviews = () => {
                             <div className="w-full bg-white rounded-2xl overflow-hidden sm:shadow-lg my-5 duration-300">
                                 <div className="hidden xl:block bg-[#1965a44b] duration-300">
                                     <div className="flex items-center justify-between font-semibold border border-gray-100 px-10 py-5">
-                                        <h5 className="w-full mr-10">Meal Title</h5>
+                                        <h5 className="w-[150%] mr-10">Meal Title</h5>
                                         <h5 className="w-full mr-10">Likes</h5>
                                         <h5 className="w-full mr-10">Reviews</h5>
                                         <h5 className="w-full mr-10">Ratings</h5>
-                                        <h5 className="w-full mr-10">Comment</h5>
-                                        <h5 className="w-full mr-10">Edit</h5>
-                                        <h5 className="w-full -mr-20">Delete</h5>
+                                        <h5 className="w-[120%] mr-10">Comment</h5>
+                                        <h5 className="max-w-[80px] w-full mr-10">Edit</h5>
+                                        <h5 className="max-w-[80px] w-full ">Delete</h5>
                                     </div>
                                 </div>
                                 <div className="flex-1 sm:flex-none">
                                     {userReviews.map((review, index) => (
-                                        <div key={index} className="flex flex-col xl:flex-row items-start xl:items-center justify-start xl:justify-between border border-gray-100 hover:bg-[#193ea417] px-10 py-5 duration-300">
-                                            <h5 className="w-full mr-10 text-lg font-semibold line-clamp-1 truncate" >{review.mealTitle}</h5>
-                                            <h5 className="w-full mr-10">{review.liked_count}</h5>
-                                            <h5 className="w-full mr-10">{review.review_count}</h5>
-                                            <h5 className="w-full mr-10">{review.ratings}</h5>
-                                            <h5 className="w-full mr-10 truncate">{review.reviewText}</h5>
-                                            <button className="w-full mr-10 text-start font-bold text-[#1965a4be] hover:text-red-400 duration-300">Edit</button>
-                                            <button
-                                                className='w-full -mr-20 text-start font-bold text-[#1965a4be] hover:text-red-400 duration-300'
-                                                onClick={() => handleDeleteReview(review.meal_id, review.review_id)}
-                                            >
-                                                Delete
-                                            </button>
+                                        <div key={index}>
+                                            <div className="flex flex-col xl:flex-row items-start xl:items-center justify-start xl:justify-between border border-gray-100 hover:bg-[#193ea417] px-10 py-5 duration-300">
+                                                <h5 className="w-[150%] mr-10 text-lg font-semibold line-clamp-1 truncate" >{review.mealTitle}</h5>
+                                                <h5 className="w-full mr-10">{review.liked_count}</h5>
+                                                <h5 className="w-full mr-10">{review.review_count}</h5>
+                                                <h5 className="w-full mr-10">{review.ratings}</h5>
+                                                <h5 className="w-[120%] mr-10 truncate">{review.reviewText}</h5>
+                                                <button
+                                                    className='max-w-[80px] w-full mr-10 text-start font-bold text-[#1965a4be] hover:text-red-400 duration-300'
+                                                    onClick={() => handleEditReview(review)}
+                                                >
+                                                    Edit
+                                                </button>
+                                                <button
+                                                    className='max-w-[80px] w-full  text-start font-bold text-[#1965a4be] hover:text-red-400 duration-300'
+                                                    onClick={() => handleDeleteReview(review.meal_id, review.review_id)}
+                                                >
+                                                    Delete
+                                                </button>
+                                            </div>
+
+                                            {/* Open the modal using document.getElementById('ID').showModal() method */}
+                                            {/* <button className="btn" onClick={() => document.getElementById('my_modal_5').showModal()}>open modal</button> */}
+                                            <dialog id="editReviewModal" className="modal modal-bottom sm:modal-middle">
+                                                <div className="modal-box">
+                                                    <h3 className="font-bold text-lg">Hello!</h3>
+                                                    <p className="py-4">Press ESC key or click the button below to close</p>
+                                                    <div className="modal-action">
+                                                        <form
+                                                            method="dialog"
+                                                            className='w-full '
+                                                            onSubmit={(e) => {
+                                                                e.preventDefault();
+                                                                handleUpdateReview(e.target.ratings.value, e.target.reviewText.value);
+                                                            }}
+                                                        >
+                                                            <div className="w-full form-control mb-5">
+                                                                <label className="label">
+                                                                    <span className="text-black dark:text-slate-300 duration-300">Ratings</span>
+                                                                </label>
+                                                                <input
+                                                                    type="number"
+                                                                    name="ratings"
+                                                                    defaultValue={currentReview?.ratings}
+                                                                    className="input input-bordered w-full bg-white duration-300"
+                                                                    step="any"  // Allow any decimal value
+                                                                    required
+                                                                />
+
+                                                                <div className="form-control mb-5">
+                                                                    <label className="label">
+                                                                        <span className="text-black dark:text-slate-300 duration-300">Comment</span>
+                                                                    </label>
+                                                                    <label className="rounded-lg">
+                                                                        <textarea
+                                                                            name="reviewText"
+                                                                            defaultValue={currentReview?.reviewText}
+                                                                            className="input input-bordered w-full h-40 bg-white duration-300"
+                                                                            required
+                                                                        />
+                                                                    </label>
+                                                                </div>
+                                                                <button type="submit" className="btn">
+                                                                    Update
+                                                                </button>
+                                                                <button
+                                                                    type="button"
+                                                                    className="btn btn-error ml-2"
+                                                                    onClick={() => {
+                                                                        const modal = document.getElementById('editReviewModal');
+                                                                        if (modal) {
+                                                                            modal.close();
+                                                                        }
+                                                                    }}
+                                                                >
+                                                                    Close
+                                                                </button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </dialog>
                                         </div>
+
                                     ))}
                                 </div>
                             </div>
