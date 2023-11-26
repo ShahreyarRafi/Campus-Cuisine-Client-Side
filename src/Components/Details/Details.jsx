@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { BsStar, BsStarFill } from 'react-icons/bs';
 import { BsStarHalf } from 'react-icons/bs';
 import { AuthContext } from '../../services/Firebase/AuthProvider';
@@ -82,9 +82,7 @@ const handleMealReq = (
 
 
 const Details = ({ meal }) => {
-
     const { user } = useContext(AuthContext);
-
 
     const {
         _id,
@@ -104,8 +102,49 @@ const Details = ({ meal }) => {
         admin_email
     } = meal || {};
 
+    const [rating, setRating] = useState("");
+    const [comment, setComment] = useState("");
 
-    console.log(meal.reviews);
+    const handleReviewSubmit = (event) => {
+        event.preventDefault();
+
+        console.log('object');
+
+        // You may want to add validation for the form fields here
+        const newReview = {
+            name: user?.displayName,
+            email: user?.email,
+            ratings: parseFloat(rating),
+            review_text: comment,
+        };
+
+        const updatedReviews = [...reviews, newReview];
+
+        // Send data to the server
+        fetch('http://localhost:5000/api/add-review', {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json'
+            },
+            body: JSON.stringify({
+                meal_id: _id,
+                reviews: updatedReviews
+            })
+        })
+            .then(res => res.json())
+            .then(data => {
+                // Assuming the server responds with the updated meal data
+                // You may want to handle the response accordingly
+                console.log(data);
+
+              
+            })
+            .catch(error => {
+                console.error("Error submitting review:", error);
+                // Handle error
+            });
+    };
+
 
     return (
         <div>
@@ -186,6 +225,43 @@ const Details = ({ meal }) => {
                     ) : (
                         <p>No reviews available.</p>
                     )}
+
+                    {/* Review Form */}
+                    <form onSubmit={handleReviewSubmit} className="mb-4">
+                        <h3 className="text-xl font-bold mb-2">Add Your Review</h3>
+                        <div className="mb-2">
+                            <label htmlFor="ratings" className="block text-gray-700 font-bold mb-1">Ratings:</label>
+                            <input
+                                type="number"
+                                id="ratings"
+                                name="ratings"
+                                value={rating}
+                                onChange={(e) => setRating(e.target.value)}
+                                className="border rounded-md py-2 px-3 w-full"
+                                min="0"
+                                max="5"
+                                step="0.1"
+                                required
+                            />
+                        </div>
+                        <div className="mb-2">
+                            <label htmlFor="review_text" className="block text-gray-700 font-bold mb-1">Review:</label>
+                            <textarea
+                                id="review_text"
+                                name="review_text"
+                                value={comment}
+                                onChange={(e) => setComment(e.target.value)}
+                                className="border rounded-md py-2 px-3 w-full"
+                                required
+                            ></textarea>
+                        </div>
+                        <button
+                            type="submit"
+                            className="bg-[#B3845A] hover:bg-[#ebb587] font-primary font-semibold text-xl text-white md:px-12 px-7 md:py-4 py-2 rounded"
+                        >
+                            Submit Review
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>
