@@ -17,6 +17,7 @@ const UserReviews = () => {
                 const mealLogs = meals.map((meal) => {
                     return {
                         reviews: meal.reviews.map((review) => ({
+                            review_id: review.review_id,
                             meal_id: review.meal_id,
                             reviewerName: review.name,
                             reviewerEmail: review.email,
@@ -45,9 +46,26 @@ const UserReviews = () => {
         log.reviews.filter((review) => review.reviewerEmail === user?.email)
     );
 
-
-
     console.log(userReviews);
+
+
+    // Delete a review
+    const handleDeleteReview = async (mealId, reviewId) => {
+        try {
+            const axiosPublic = useAxiosPublic();
+            // Adjust the API endpoint based on your server implementation
+            await axiosPublic.delete(`/meals/${mealId}/reviews/${reviewId}`);
+
+            // Update the local state to reflect the deleted review
+            setLogs((prevLogs) =>
+                prevLogs.map((log) => ({
+                    reviews: log.reviews.filter((review) => !(review.meal_id === mealId && review.review_id === reviewId)),
+                }))
+            );
+        } catch (error) {
+            console.error('Error deleting review:', error);
+        }
+    };
 
     return (
         <div className='font-primary'>
@@ -84,7 +102,12 @@ const UserReviews = () => {
                                             <h5 className="w-full mr-10">{review.ratings}</h5>
                                             <h5 className="w-full mr-10 truncate">{review.reviewText}</h5>
                                             <button className="w-full mr-10 text-start font-bold text-[#1965a4be] hover:text-red-400 duration-300">Edit</button>
-                                            <button className="w-full -mr-20 text-start  font-bold text-[#1965a4be] hover:text-red-400 duration-300">Delete</button>
+                                            <button
+                                                className='w-full -mr-20 text-start font-bold text-[#1965a4be] hover:text-red-400 duration-300'
+                                                onClick={() => handleDeleteReview(review.meal_id, review.review_id)}
+                                            >
+                                                Delete
+                                            </button>
                                         </div>
                                     ))}
                                 </div>

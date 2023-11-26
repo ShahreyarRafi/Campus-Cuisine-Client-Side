@@ -35,7 +35,8 @@
     "sort-by": "^1.2.0",
     "sweetalert": "^2.1.2",
     "sweetalert2": "^11.7.32",
-    "tw-elements": "^1.0.0"
+    "tw-elements": "^1.0.0",
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
     "@types/react": "^18.2.15",

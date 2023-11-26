@@ -3,6 +3,7 @@ import { BsStar, BsStarFill } from 'react-icons/bs';
 import { BsStarHalf } from 'react-icons/bs';
 import { AuthContext } from '../../services/Firebase/AuthProvider';
 import Swal from 'sweetalert2';
+import { v4 as uuidv4 } from 'uuid';
 
 
 const handleMealReq = (
@@ -110,6 +111,7 @@ const Details = ({ meal }) => {
 
         // You may want to add validation for the form fields here
         const newReview = {
+            review_id: uuidv4(),
             meal_id: _id,
             name: user?.displayName,
             email: user?.email,
@@ -144,6 +146,8 @@ const Details = ({ meal }) => {
                 // Handle error
             });
     };
+
+
 
 
     return (
