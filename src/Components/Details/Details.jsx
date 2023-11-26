@@ -98,50 +98,94 @@ const Details = ({ meal }) => {
         meal_status,
         ratings,
         review_count,
+        reviews,
         liked_count,
         admin_name,
         admin_email
     } = meal || {};
 
 
-
+    console.log(meal.reviews);
 
     return (
-        <div className='flex justify-center items-center py-10 font-primary h-[68vh]'>
-            <div className='flex'>
-                <img className='h-80 object-cover mb-5 w-1/2' src={meal.image} alt="" />
-                <div className="divider divider-horizontal"></div>
-                <div className='w-1/2'>
-                    <h2 className='text-3xl font-bold mb-3'>{meal.title}</h2>
-                    <p className='text-lg mb-2'>{meal.description}</p>
-                    <p className='text-lg mb-1'><span className='font-bold mb-1 text-slate-700'>Ingredients: </span>  {meal.ingredients}</p>
-                    <p className='text-lg mb-1'><span className='font-bold mb-1 text-slate-700'>Distributor: </span> {meal.admin_name}</p>
-                    <p className='text-lg mb-1'><span className='font-bold mb-1 text-slate-700'>Post Time: </span> {meal.post_time}</p>
-                    <p className='text-lg mb-1'><span className='font-bold mb-1 text-slate-700'>Meal Status: </span> {meal.meal_status}</p>
-                    <div className='flex gap-1 text-lg mb-1'>
-                        <p className='font-bold mb-1 text-slate-700'> Ratings: </p>
-                        <div className='flex items-center truncate'>
-                            <div className='flex gap-[1px] -mt-[2px] mr-1'>
-                                {Array.from({ length: Math.min(Math.floor(meal.ratings), 5) }, (_, index) => (
-                                    <span key={index} className="text-yellow-400"><BsStarFill /></span>
-                                ))}
-                                {meal.ratings % 1 !== 0 && (
-                                    <span className="text-yellow-400"><BsStarHalf /> </span>
-                                )}
-                                {Array.from({ length: Math.max(5 - Math.ceil(meal.ratings), 0) }, (_, index) => (
-                                    <span key={index} className="text-gray-400"><BsStar /></span>
-                                ))}
+        <div>
+            <div className='flex justify-center items-center py-10 font-primary'>
+                <div className='flex'>
+                    <img className='h-80 object-cover mb-5 w-1/2' src={meal.image} alt="" />
+                    <div className="divider divider-horizontal"></div>
+                    <div className='w-1/2'>
+                        <h2 className='text-3xl font-bold mb-3'>{meal.title}</h2>
+                        <p className='text-lg mb-2'>{meal.description}</p>
+                        <p className='text-lg mb-1'><span className='font-bold mb-1 text-slate-700'>Ingredients: </span>  {meal.ingredients}</p>
+                        <p className='text-lg mb-1'><span className='font-bold mb-1 text-slate-700'>Distributor: </span> {meal.admin_name}</p>
+                        <p className='text-lg mb-1'><span className='font-bold mb-1 text-slate-700'>Post Time: </span> {meal.post_time}</p>
+                        <p className='text-lg mb-1'><span className='font-bold mb-1 text-slate-700'>Meal Status: </span> {meal.meal_status}</p>
+                        <div className='flex gap-1 text-lg mb-1'>
+                            <p className='font-bold mb-1 text-slate-700'> Ratings: </p>
+                            <div className='flex items-center truncate'>
+                                <div className='flex gap-[1px] -mt-[2px] mr-1'>
+                                    {Array.from({ length: Math.min(Math.floor(meal.ratings), 5) }, (_, index) => (
+                                        <span key={index} className="text-yellow-400"><BsStarFill /></span>
+                                    ))}
+                                    {meal.ratings % 1 !== 0 && (
+                                        <span className="text-yellow-400"><BsStarHalf /> </span>
+                                    )}
+                                    {Array.from({ length: Math.max(5 - Math.ceil(meal.ratings), 0) }, (_, index) => (
+                                        <span key={index} className="text-gray-400"><BsStar /></span>
+                                    ))}
+                                </div>
+                                <p> {Math.min(meal.ratings, 5)} {Math.min(meal.ratings, 5) > 1 ? ("Stars") : ("star")}</p>
                             </div>
-                            <p> {Math.min(meal.ratings, 5)} {Math.min(meal.ratings, 5) > 1 ? ("Stars") : ("star")}</p>
                         </div>
+                        <p className='text-lg mb-4'><span className='font-bold mb-1 text-slate-700'>Reviews: </span> {meal.review_count}</p>
+                        <button
+                            onClick={(event) => handleMealReq(event, user.uid, user.email, _id, image, title, description, ingredients, category, price, post_time, meal_status, ratings, review_count, liked_count, admin_name, admin_email)}
+                            className=" bg-[#B3845A] hover:bg-[#ebb587] font-primary font-semibold text-xl text-white md:px-12 px-7 md:py-4 py-2 rounded"
+                        >
+                            Request This Meal
+                        </button>
                     </div>
-                    <p className='text-lg mb-4'><span className='font-bold mb-1 text-slate-700'>Reviews: </span> {meal.review_count}</p>
-                    <button
-                        onClick={(event) => handleMealReq(event, user.uid, user.email, _id, image, title, description, ingredients, category, price, post_time, meal_status, ratings, review_count, liked_count, admin_name, admin_email)}
-                        className=" bg-[#B3845A] hover:bg-[#ebb587] font-primary font-semibold text-xl text-white md:px-12 px-7 md:py-4 py-2 rounded"
-                    >
-                        Request This Meal
-                    </button>
+                </div>
+            </div>
+
+            {/* reviews section */}
+
+            <div className='w-full'>
+                <div className='max-w-[1300px] mx-auto'>
+                    <h3 className="text-2xl font-bold mb-2">Reviews</h3>
+                    {reviews && reviews.length > 0 ? (
+                        <div>
+                            {reviews.map((review) => (
+                                <div key={review._id} className="mb-4">
+                                    <p className="text-lg mb-1">
+                                        <span className="font-bold mb-1 text-slate-700">User:</span> {review.name}
+                                    </p>
+                                    <div className='flex gap-1 text-lg mb-1'>
+                                        <p className='font-bold mb-1 text-slate-700'> Ratings: </p>
+                                        <div className='flex items-center truncate'>
+                                            <div className='flex gap-[1px] -mt-[2px] mr-1'>
+                                                {Array.from({ length: Math.min(Math.floor(review.ratings), 5) }, (_, index) => (
+                                                    <span key={index} className="text-yellow-400"><BsStarFill /></span>
+                                                ))}
+                                                {review.ratings % 1 !== 0 && (
+                                                    <span className="text-yellow-400"><BsStarHalf /> </span>
+                                                )}
+                                                {Array.from({ length: Math.max(5 - Math.ceil(review.ratings), 0) }, (_, index) => (
+                                                    <span key={index} className="text-gray-400"><BsStar /></span>
+                                                ))}
+                                            </div>
+                                            <p> {Math.min(review.ratings, 5)} {Math.min(review.ratings, 5) > 1 ? ("Stars") : ("star")}</p>
+                                        </div>
+                                    </div>
+                                    <p className="text-lg mb-1">
+                                        <span className="font-bold mb-1 text-slate-700">Comment:</span> {review.review_text}
+                                    </p>
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <p>No reviews available.</p>
+                    )}
                 </div>
             </div>
         </div>
