@@ -50,7 +50,7 @@ const UserReviews = () => {
     console.log(userReviews);
 
     return (
-        <div className=''>
+        <div className='font-primary'>
             {loading ? (
                 <div className='min-h-[69vh] flex justify-center items-center'>
                     <span className="loading loading-spinner text-[#B3845A] loading-lg"></span>
