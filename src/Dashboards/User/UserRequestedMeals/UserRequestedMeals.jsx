@@ -72,7 +72,7 @@ const UserRequestedMeals = () => {
                             <div className="w-full bg-white rounded-2xl overflow-hidden sm:shadow-lg my-5 duration-300">
                                 <div className="hidden xl:block bg-[#1965a44b] duration-300">
                                     <div className="flex items-center justify-between font-semibold border border-gray-100 px-10 py-5">
-                                        <h5 className="w-full mr-10">Meal Title</h5>
+                                        <h5 className="w-[160%] mr-10">Meal Title</h5>
                                         <h5 className="w-full mr-10">Likes</h5>
                                         <h5 className="w-full mr-10">Reviews</h5>
                                         <h5 className="w-full mr-10">Status</h5>
@@ -82,7 +82,7 @@ const UserRequestedMeals = () => {
                                 <div className="flex-1 sm:flex-none">
                                     {reqMealsData?.map((meal) => (
                                         <div key={meal._id} className="flex flex-col xl:flex-row items-start xl:items-center justify-start xl:justify-between border border-gray-100 hover:bg-[#193ea417] px-10 py-5 duration-300">
-                                            <h5 className="w-full mr-10 text-lg font-semibold line-clamp-1" data-tooltip-id="all-meal-page-meal-title" data-tooltip-content={meal.meal_title}>{meal.title}</h5>
+                                            <h5 className="w-[160%] mr-10 text-lg font-semibold line-clamp-1" data-tooltip-id="all-meal-page-meal-title" data-tooltip-content={meal.meal_title}>{meal.title}</h5>
                                             <h5 className="w-full mr-10">{meal.liked_count}</h5>
                                             <h5 className="w-full mr-10">{meal.review_count}</h5>
                                             <h5 className="w-full mr-10">Status Here</h5>
