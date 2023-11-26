@@ -108,12 +108,14 @@ const Details = ({ meal }) => {
     const handleReviewSubmit = (event) => {
         event.preventDefault();
 
-        console.log('object');
-
         // You may want to add validation for the form fields here
         const newReview = {
+            meal_id: _id,
             name: user?.displayName,
             email: user?.email,
+            title: title,
+            liked_count: liked_count,
+            review_count: review_count,
             ratings: parseFloat(rating),
             review_text: comment,
         };
@@ -136,8 +138,6 @@ const Details = ({ meal }) => {
                 // Assuming the server responds with the updated meal data
                 // You may want to handle the response accordingly
                 console.log(data);
-
-              
             })
             .catch(error => {
                 console.error("Error submitting review:", error);
