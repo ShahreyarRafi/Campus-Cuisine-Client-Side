@@ -159,7 +159,7 @@ const Navbar = () => {
                                             isPending ? "pending" : isActive ? "text-[#B3845A]" : ""
                                         }
                                     >
-                                        ALL MEALS
+                                        MEALS
                                     </NavLink>
                                 </a>
                                 <a className="nav-item lg:my-1 xl:mx-3 flex items-center text-sm xl:text-base uppercase font-semibold  text-black dark:text-white hover:opacity-75 border-2 border-[#B3845A] rounded-md hover:rounded-full duration-300 ">

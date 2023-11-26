@@ -7,57 +7,59 @@ import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 
 let tabs = [
-  { id: "All", label: "All Meals" },
-  { id: "Breakfast", label: "Breakfast" },
-  { id: "Lunch", label: "Lunch" },
-  { id: "Dinner", label: "Dinner" },
+    { id: "All", label: "All Meals" },
+    { id: "Breakfast", label: "Breakfast" },
+    { id: "Lunch", label: "Lunch" },
+    { id: "Dinner", label: "Dinner" },
 ];
 
 const AllMeals = ({ allMeals }) => {
-  const [searchValue, setSearchValue] = useState('');
-  const [filteredMeals, setFilteredMeals] = useState([]);
-  const [activeTab, setActiveTab] = useState('All');
-  const [pageNumber, setPageNumber] = useState(1);
+    const [searchValue, setSearchValue] = useState('');
+    const [filteredMeals, setFilteredMeals] = useState([]);
+    const [activeTab, setActiveTab] = useState('All');
+    const [pageNumber, setPageNumber] = useState(1);
 
-  useEffect(() => {
-    // Function to load more meals when scrolling down
-    const loadMoreMeals = () => {
-      // Check if the user has scrolled to the bottom
-      if (
-        window.innerHeight + document.documentElement.scrollTop ===
-        document.documentElement.offsetHeight
-      ) {
-        // Increment the page number and fetch more meals
-        setPageNumber((prevPageNumber) => prevPageNumber + 1);
-      }
-    };
+    useEffect(() => {
+        // Function to load more meals when scrolling down
+        const loadMoreMeals = () => {
+            // Check if the user has scrolled to the bottom
+            if (
+                window.innerHeight + document.documentElement.scrollTop ===
+                document.documentElement.offsetHeight
+            ) {
+                // Increment the page number and fetch more meals
+                setPageNumber((prevPageNumber) => prevPageNumber + 1);
+            }
+        };
 
-    // Add the event listener for scrolling
-    window.addEventListener('scroll', loadMoreMeals);
+        // Add the event listener for scrolling
+        window.addEventListener('scroll', loadMoreMeals);
 
-    // Remove the event listener when the component unmounts
-    return () => {
-      window.removeEventListener('scroll', loadMoreMeals);
-    };
-  }, []);
+        // Remove the event listener when the component unmounts
+        return () => {
+            window.removeEventListener('scroll', loadMoreMeals);
+        };
+    }, []);
 
-  useEffect(() => {
-    // Filter meals based on the selected category
-    const filtered = allMeals.filter(
-      (meal) =>
-        activeTab === 'All' || meal.category.toLowerCase() === activeTab.toLowerCase()
-    );
+    useEffect(() => {
+        // Filter meals based on the selected category and exclude "Upcoming" meals
+        const filtered = allMeals.filter(
+            (meal) =>
+                (activeTab === 'All' || meal.category.toLowerCase() === activeTab.toLowerCase()) &&
+                meal.meal_status.toLowerCase() === 'ready'
+        );
 
-    // Filter meals based on the search input
-    const searchFiltered = filtered.filter((meal) =>
-      meal.title.toLowerCase().includes(searchValue.toLowerCase())
-    );
+        // Filter meals based on the search input
+        const searchFiltered = filtered.filter((meal) =>
+            meal.title.toLowerCase().includes(searchValue.toLowerCase())
+        );
 
-    // Slice the array to get only the meals for the current page
-    const slicedMeals = searchFiltered.slice(0, pageNumber * 10);
+        // Slice the array to get only the meals for the current page
+        const slicedMeals = searchFiltered.slice(0, pageNumber * 10);
 
-    setFilteredMeals(slicedMeals);
-  }, [allMeals, activeTab, searchValue, pageNumber]);
+        setFilteredMeals(slicedMeals);
+    }, [allMeals, activeTab, searchValue, pageNumber]);
+
 
 
     return (
