@@ -2,8 +2,10 @@ import { useContext, useState } from 'react';
 import { BsStar, BsStarFill } from 'react-icons/bs';
 import { BsStarHalf } from 'react-icons/bs';
 import { AuthContext } from '../../services/Firebase/AuthProvider';
+import { FaHeart } from "react-icons/fa";
 import Swal from 'sweetalert2';
 import { v4 as uuidv4 } from 'uuid';
+
 
 
 const handleMealReq = (
@@ -103,6 +105,7 @@ const Details = ({ meal }) => {
         admin_email
     } = meal || {};
 
+    const [isLiked, setIsLiked] = useState(false);
     const [rating, setRating] = useState("");
     const [comment, setComment] = useState("");
 
@@ -149,6 +152,30 @@ const Details = ({ meal }) => {
 
 
 
+    const handleLikeClick = () => {
+        // For simplicity, updating the state locally. 
+        setIsLiked(true);
+
+        // You may want to send a request to the server to update the like count.
+        fetch(`http://localhost:5000/api/like-meal/${_id}`, {
+            method: 'PUT',
+            headers: {
+                'content-type': 'application/json'
+            },
+            body: JSON.stringify({
+                liked_count: liked_count + 1
+            })
+        })
+            .then(res => res.json())
+            .then(data => {
+                // Handle the response from the server if needed
+            })
+            .catch(error => {
+                console.error("Error updating like count:", error);
+                // Handle error
+            });
+    };
+
 
     return (
         <div>
@@ -163,6 +190,8 @@ const Details = ({ meal }) => {
                         <p className='text-lg mb-1'><span className='font-bold mb-1 text-slate-700'>Distributor: </span> {meal.admin_name}</p>
                         <p className='text-lg mb-1'><span className='font-bold mb-1 text-slate-700'>Post Time: </span> {meal.post_time}</p>
                         <p className='text-lg mb-1'><span className='font-bold mb-1 text-slate-700'>Meal Status: </span> {meal.meal_status}</p>
+                        <p className='text-lg mb-1'><span className='font-bold mb-1 text-slate-700'>Liked: </span> {meal.liked_count}</p>
+                        <p className='text-lg mb-1'><span className='font-bold mb-1 text-slate-700'>Reviews: </span> {meal.review_count}</p>
                         <div className='flex gap-1 text-lg mb-1'>
                             <p className='font-bold mb-1 text-slate-700'> Ratings: </p>
                             <div className='flex items-center truncate'>
@@ -181,12 +210,20 @@ const Details = ({ meal }) => {
                             </div>
                         </div>
                         <p className='text-lg mb-4'><span className='font-bold mb-1 text-slate-700'>Reviews: </span> {meal.review_count}</p>
-                        <button
-                            onClick={(event) => handleMealReq(event, user.uid, user.email, _id, image, title, description, ingredients, category, price, post_time, meal_status, ratings, review_count, liked_count, admin_name, admin_email)}
-                            className=" bg-[#B3845A] hover:bg-[#ebb587] font-primary font-semibold text-xl text-white md:px-12 px-7 md:py-4 py-2 rounded"
-                        >
-                            Request This Meal
-                        </button>
+                        <div className='flex items-center gap-7'>
+                            <button
+                                onClick={(event) => handleMealReq(event, user.uid, user.email, _id, image, title, description, ingredients, category, price, post_time, meal_status, ratings, review_count, liked_count, admin_name, admin_email)}
+                                className=" bg-[#B3845A] hover:bg-[#ebb587] font-primary font-semibold text-xl text-white md:px-12 px-7 md:py-4 py-2 rounded"
+                            >
+                                Request This Meal
+                            </button>
+                            <button
+                                onClick={handleLikeClick}
+                                className={`text-4xl ${isLiked ? 'text-red-500' : 'text-gray-500'}`}
+                            >
+                                <FaHeart />
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>

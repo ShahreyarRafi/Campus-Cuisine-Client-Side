@@ -6,10 +6,16 @@ import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
+import { FaHeart } from 'react-icons/fa';
+import { useState } from 'react';
 
 
 
 const Upcoming = () => {
+
+    const [likedMeals, setLikedMeals] = useState({});
+
+    const [isLiked, setIsLiked] = useState(false);
 
     const { isPending, data: upcoming } = useQuery({
         queryKey: ['upcoming'],
@@ -22,6 +28,37 @@ const Upcoming = () => {
     if (isPending) {
         return <div className='h-[69vh] flex justify-center items-center'><CircularProgress /></div>
     }
+
+
+    const handleLikeClick = (meal) => {
+        // Check if the meal is already liked
+        if (!likedMeals[meal._id]) {
+            // Update the liked count locally
+            setLikedMeals((prevLikedMeals) => ({
+                ...prevLikedMeals,
+                [meal._id]: true,
+            }));
+
+            // You may want to send a request to the server to update the like count.
+            fetch(`http://localhost:5000/api/like-meal/${meal._id}`, {
+                method: 'PUT',
+                headers: {
+                    'content-type': 'application/json'
+                },
+                body: JSON.stringify({
+                    liked_count: meal.liked_count + 1
+                })
+            })
+                .then(res => res.json())
+                .then(data => {
+                    // Handle the response from the server if needed
+                })
+                .catch(error => {
+                    console.error("Error updating like count:", error);
+                    // Handle error
+                });
+        }
+    };
 
     return (
         <div className='min-h-[69vh] bg-[#1965a423] flex justify-center items-center font-primary w-full py-10 px-10 mx-auto duration-300'>
@@ -67,6 +104,12 @@ const Upcoming = () => {
                                     <Link className='w-full text-center' to={`/meals/${meal._id}`}>
                                         <button className='text-[#B3845A] font-bold mx-2 w-full text-center'>Show Details</button>
                                     </Link>
+                                    <button
+                                        onClick={() => handleLikeClick(meal)}
+                                        className={`text-2xl mr-1 ${likedMeals[meal._id] ? 'text-red-500' : 'text-gray-500'}`}
+                                    >
+                                        <FaHeart />
+                                    </button>
                                 </CardActions>
                             </Card>
                         </div>

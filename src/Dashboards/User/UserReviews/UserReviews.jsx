@@ -114,7 +114,7 @@ const UserReviews = () => {
 
 
     return (
-        <div className='font-primary bg-[#1965a423]'>
+        <div className='font-primary bg-[#1965a423] p-5'>
             {loading ? (
                 <div className='min-h-[69vh] flex justify-center items-center'>
                     <span className="loading loading-spinner text-[#B3845A] loading-lg"></span>
@@ -130,7 +130,7 @@ const UserReviews = () => {
                             <div className="w-full bg-white rounded-2xl overflow-hidden sm:shadow-lg my-5 duration-300">
                                 <div className="hidden xl:block bg-[#1965a44b] duration-300">
                                     <div className="flex items-center justify-between font-semibold border border-gray-100 px-10 py-5">
-                                        <h5 className="w-[150%] mr-10">Meal Title</h5>
+                                        <h5 className="w-[160%] mr-10">Meal Title</h5>
                                         <h5 className="w-full mr-10">Likes</h5>
                                         <h5 className="w-full mr-10">Reviews</h5>
                                         <h5 className="w-full mr-10">Ratings</h5>
@@ -143,7 +143,7 @@ const UserReviews = () => {
                                     {userReviews.map((review, index) => (
                                         <div key={index}>
                                             <div className="flex flex-col xl:flex-row items-start xl:items-center justify-start xl:justify-between border border-gray-100 hover:bg-[#193ea417] px-10 py-5 duration-300">
-                                                <h5 className="w-[150%] mr-10 text-lg font-semibold line-clamp-1 truncate" >{review.mealTitle}</h5>
+                                                <h5 className="w-[160%] mr-10 text-lg font-semibold line-clamp-1 truncate" >{review.mealTitle}</h5>
                                                 <h5 className="w-full mr-10">{review.liked_count}</h5>
                                                 <h5 className="w-full mr-10">{review.review_count}</h5>
                                                 <h5 className="w-full mr-10">{review.ratings}</h5>
@@ -166,12 +166,11 @@ const UserReviews = () => {
                                             {/* <button className="btn" onClick={() => document.getElementById('my_modal_5').showModal()}>open modal</button> */}
                                             <dialog id="editReviewModal" className="modal modal-bottom sm:modal-middle">
                                                 <div className="modal-box">
-                                                    <h3 className="font-bold text-lg">Hello!</h3>
-                                                    <p className="py-4">Press ESC key or click the button below to close</p>
+                                                    <h3 className="font-bold text-center text-xl mt-4 -mb-5">Update Your Review</h3>
                                                     <div className="modal-action">
                                                         <form
                                                             method="dialog"
-                                                            className='w-full '
+                                                            className='w-full'
                                                             onSubmit={(e) => {
                                                                 e.preventDefault();
                                                                 handleUpdateReview(e.target.ratings.value, e.target.reviewText.value);
@@ -179,20 +178,20 @@ const UserReviews = () => {
                                                         >
                                                             <div className="w-full form-control mb-5">
                                                                 <label className="label">
-                                                                    <span className="text-black dark:text-slate-300 duration-300">Ratings</span>
+                                                                    <span className="text-black  duration-300">Ratings</span>
                                                                 </label>
                                                                 <input
                                                                     type="number"
                                                                     name="ratings"
                                                                     defaultValue={currentReview?.ratings}
-                                                                    className="input input-bordered w-full bg-white duration-300"
+                                                                    className="input input-bordered w-full mb-3 bg-white duration-300"
                                                                     step="any"  // Allow any decimal value
                                                                     required
                                                                 />
 
                                                                 <div className="form-control mb-5">
                                                                     <label className="label">
-                                                                        <span className="text-black dark:text-slate-300 duration-300">Comment</span>
+                                                                        <span className="text-black duration-300">Comment</span>
                                                                     </label>
                                                                     <label className="rounded-lg">
                                                                         <textarea
@@ -203,12 +202,12 @@ const UserReviews = () => {
                                                                         />
                                                                     </label>
                                                                 </div>
-                                                                <button type="submit" className="btn">
+                                                                <button type="submit" className="btn mb-4">
                                                                     Update
                                                                 </button>
                                                                 <button
                                                                     type="button"
-                                                                    className="btn btn-error ml-2"
+                                                                    className="btn btn-error"
                                                                     onClick={() => {
                                                                         const modal = document.getElementById('editReviewModal');
                                                                         if (modal) {
