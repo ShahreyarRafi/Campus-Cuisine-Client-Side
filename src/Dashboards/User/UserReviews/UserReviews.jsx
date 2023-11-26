@@ -71,6 +71,8 @@ const UserReviews = () => {
                                         <h5 className="w-full mr-10">Reviews</h5>
                                         <h5 className="w-full mr-10">Ratings</h5>
                                         <h5 className="w-full mr-10">Comment</h5>
+                                        <h5 className="w-full mr-10">Edit</h5>
+                                        <h5 className="w-full -mr-20">Delete</h5>
                                     </div>
                                 </div>
                                 <div className="flex-1 sm:flex-none">
@@ -81,8 +83,9 @@ const UserReviews = () => {
                                             <h5 className="w-full mr-10">{review.review_count}</h5>
                                             <h5 className="w-full mr-10">{review.ratings}</h5>
                                             <h5 className="w-full mr-10 truncate">{review.reviewText}</h5>
+                                            <button className="w-full mr-10 text-start font-bold text-[#1965a4be] hover:text-red-400 duration-300">Edit</button>
+                                            <button className="w-full -mr-20 text-start  font-bold text-[#1965a4be] hover:text-red-400 duration-300">Delete</button>
                                         </div>
-
                                     ))}
                                 </div>
                             </div>
