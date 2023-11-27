@@ -16,6 +16,7 @@ import UserDashboard from "../Dashboards/User/UserDashboard/UserDashboard";
 import UserProfile from "../Dashboards/User/UserProfile/UserProfile";
 import UserRequestedMeals from "../Dashboards/User/UserRequestedMeals/UserRequestedMeals";
 import UserReviews from "../Dashboards/User/UserReviews/UserReviews";
+import AdminDashboard from "../Dashboards/Admin/AdminDashboard/AdminDashboard";
 
 
 
@@ -80,6 +81,24 @@ const router = createBrowserRouter([
     {
         path: 'dashboard',
         element: <UserDashboard></UserDashboard>,
+        children: [
+            {
+                path: 'user/profile',
+                element: <UserProfile></UserProfile>
+            },
+            {
+                path: 'user/requested-meals',
+                element: <UserRequestedMeals></UserRequestedMeals>
+            },
+            {
+                path: 'user/reviews',
+                element: <UserReviews></UserReviews>
+            },
+        ]
+    },
+    {
+        path: 'admin/dashboard',
+        element: <AdminDashboard></AdminDashboard>,
         children: [
             {
                 path: 'user/profile',

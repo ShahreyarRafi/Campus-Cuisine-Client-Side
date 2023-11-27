@@ -5,7 +5,7 @@ import { NavLink, Outlet } from "react-router-dom";
 
 
 
-const UserDashboard = () => {
+const AdminDashboard = () => {
 
     const { user } = useContext(AuthContext);
 
@@ -36,14 +36,6 @@ const UserDashboard = () => {
                         <div className="divider mb-7"></div>
                         <div className=" flex flex-col justify-between items-center gap-7">
                             <NavLink
-                                to="/"
-                                className={({ isActive, isPending }) =>
-                                    isPending ? "pending" : isActive ? "text-[#FFFFF6] bg-[#062230] px-5 py-2 rounded" : "text-[#FFFFF6] text-center"
-                                }
-                            >
-                                Back To Home
-                            </NavLink>
-                            <NavLink
                                 to="/dashboard/user/profile"
                                 className={({ isActive, isPending }) =>
                                     isPending ? "pending" : isActive ? "text-[#FFFFF6] bg-[#062230] px-5 py-2 rounded" : "text-[#FFFFF6] text-center"
@@ -67,7 +59,6 @@ const UserDashboard = () => {
                             >
                                 My Reviews
                             </NavLink>
-
                         </div>
 
                     </div>
@@ -81,4 +72,4 @@ const UserDashboard = () => {
     );
 };
 
-export default UserDashboard;
+export default AdminDashboard;
