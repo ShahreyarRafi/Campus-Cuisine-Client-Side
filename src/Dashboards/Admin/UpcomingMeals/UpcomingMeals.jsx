@@ -74,6 +74,50 @@ const UpcomingMeals = () => {
         }));
     };
 
+    const handleDelete = async (mealId) => {
+        try {
+            // Send a request to delete the meal with the given ID
+            await axiosPublic.delete(`/meals/${mealId}`);
+
+            // Update the filtered meals by removing the deleted meal
+            setFilteredMeals((prevMeals) => prevMeals.filter((meal) => meal._id !== mealId));
+        } catch (error) {
+            console.error("Error deleting meal:", error);
+            // Handle error (e.g., show an error message to the user)
+        }
+    };
+
+
+    const handlePublish = async (mealId) => {
+        console.log(mealId);
+
+        try {
+            // Fetch the meal with the given ID
+            const response = await axiosPublic.get(`/meals/${mealId}`);
+            const meal = response.data;
+
+            // Check if the meal has 10 or more likes
+            if (meal.liked_count >= 10) {
+                // Update the "meal_status" to "Ready"
+                await axiosPublic.patch(`/meals/${mealId}`, {
+                    meal_status: 'Ready',
+                });
+
+                // Reload the data from the server
+                // This will trigger a re-render and show the updated data
+                // You might consider refetching the entire meals list to ensure it's up-to-date
+                // Example: queryClient.invalidateQueries('meals');
+                const updatedMeals = await axiosPublic.get(`/meals`);
+                setFilteredMeals(updatedMeals.data);
+            } else {
+                // Display a message to the user that the meal needs at least 10 likes
+                alert('This meal needs at least 10 likes to be published.');
+            }
+        } catch (error) {
+            console.error("Error publishing meal:", error);
+            // Handle error (e.g., show an error message to the user)
+        }
+    };
 
 
     return (
@@ -135,10 +179,9 @@ const UpcomingMeals = () => {
                                                     </span>
                                                 )}
                                             </button>
-                                            <h5 className="w-full mr-10">Reviews</h5>
                                             <h5 className="w-full mr-10">Admin Name</h5>
                                             <h5 className="w-full mr-10">Admin Email</h5>
-                                            <h5 className="w-full mr-10">Update</h5>
+                                            <h5 className="w-full mr-10">Publish</h5>
                                             <h5 className="w-full mr-10">Delete</h5>
                                             <h5 className="w-full mr-10">View Meal</h5>
                                         </div>
@@ -147,11 +190,14 @@ const UpcomingMeals = () => {
                                         {filteredMeals?.map((meal) => (
                                             <div key={meal._id} className="flex flex-col xl:flex-row items-start xl:items-center justify-start xl:justify-between border border-gray-100 hover:bg-[#193ea417] px-10 py-5 duration-300">
                                                 <h5 className="w-[160%] mr-10 text-lg font-semibold line-clamp-1" >{meal.title}</h5>
-                                                <h5 className="w-full mr-10">{meal.liked_count}</h5>
-                                                <h5 className="w-full mr-10">{meal.review_count}</h5>
+                                                <h5 className="max-w-[80px] w-full mr-10">{meal.liked_count}</h5>
                                                 <h5 className="w-full mr-10">{meal.admin_name}</h5>
                                                 <h5 className="w-full mr-10">{meal.admin_email}</h5>
-                                                <h5 className="w-full mr-10">Update</h5>
+                                                <button 
+                                                className='text-[#B3845A] w-full font-bold mx-2text-center'
+                                                onClick={() => handlePublish(meal._id)}
+                                                >
+                                                    Publish</button>
                                                 <button
                                                     className="text-[#B3845A] w-full font-bold mx-2 text-center"
                                                     onClick={() => handleDelete(meal._id)}
@@ -161,7 +207,6 @@ const UpcomingMeals = () => {
                                                 <Link className='w-full mr-10 text-center' to={`/meals/${meal._id}`}>
                                                     <button className='text-[#B3845A] w-full font-bold mx-2text-center'>View Details</button>
                                                 </Link>
-
                                             </div>
                                         ))}
                                     </div>
