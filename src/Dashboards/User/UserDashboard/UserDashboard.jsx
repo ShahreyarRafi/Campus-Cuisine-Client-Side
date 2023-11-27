@@ -1,7 +1,8 @@
 import { useContext } from "react";
 import { AuthContext } from "../../../services/Firebase/AuthProvider";
 import userPicPlaceholder from '../../../assets/images/userPicPlaceHolder.png';
-import { NavLink } from "react-router-dom";
+import { NavLink, Outlet } from "react-router-dom";
+import UserProfile from "../UserProfile/UserProfile"
 
 
 
@@ -11,7 +12,7 @@ const UserDashboard = () => {
 
 
     return (
-        <div className='w-full mt-24 font-primary text-center'>
+        <div className='flex w-full font-primary text-center'>
             <div className="w-64 bg-[#B3845A] h-screen pt-7">
                 <div className="w-full flex justify-center">
                     <div>
@@ -36,7 +37,7 @@ const UserDashboard = () => {
                         <div className="divider mb-7"></div>
                         <div className=" flex flex-col justify-between items-center gap-7">
                             <NavLink
-                                to="/user/profile"
+                                to="/dashboard/user/profile"
                                 className={({ isActive, isPending }) =>
                                     isPending ? "pending" : isActive ? "text-[#FFFFF6] bg-[#062230] px-5 py-2 rounded" : "text-[#FFFFF6] text-center"
                                 }
@@ -44,7 +45,7 @@ const UserDashboard = () => {
                                 My Profile
                             </NavLink>
                             <NavLink
-                                to="/user/requested-meals"
+                                to="/dashboard/user/requested-meals"
                                 className={({ isActive, isPending }) =>
                                     isPending ? "pending" : isActive ? "text-[#FFFFF6] bg-[#062230] px-5 py-2 rounded" : "text-[#FFFFF6] text-center"
                                 }
@@ -52,7 +53,7 @@ const UserDashboard = () => {
                                 Requested Meals
                             </NavLink>
                             <NavLink
-                                to="/user/reviews"
+                                to="/dashboard/user/reviews"
                                 className={({ isActive, isPending }) =>
                                     isPending ? "pending" : isActive ? "text-[#FFFFF6] bg-[#062230] px-5 py-2 rounded" : "text-[#FFFFF6] text-center"
                                 }
@@ -65,10 +66,9 @@ const UserDashboard = () => {
                 </div>
 
             </div>
-            <div>
-
+            <div className="flex-1">
+                <Outlet></Outlet>
             </div>
-
         </div>
     );
 };

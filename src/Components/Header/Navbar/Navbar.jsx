@@ -257,7 +257,7 @@ const Navbar = () => {
                                                                                     {user.email}
                                                                                 </p>
                                                                             )}
-                                                                            <Link to='/user/dashboard'>
+                                                                            <Link to='dashboard'>
                                                                                 <button
                                                                                     type="button"
                                                                                     className="text-sm xl:text-base font-semibold text-red-600 hover:text-red-900"

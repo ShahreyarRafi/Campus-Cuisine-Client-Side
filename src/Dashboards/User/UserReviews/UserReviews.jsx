@@ -114,13 +114,13 @@ const UserReviews = () => {
 
 
     return (
-        <div className='font-primary bg-[#1965a423] p-5'>
+        <div className='font-primary bg-[#1965a423] px-5'>
             {loading ? (
-                <div className='min-h-[69vh] flex justify-center items-center'>
+                <div className='min-h-screen flex justify-center items-center'>
                     <span className="loading loading-spinner text-[#B3845A] loading-lg"></span>
                 </div>
             ) : (
-                <div className='min-h-[69vh] pt-10'>
+                <div className='min-h-screen pt-10'>
                     <h1 className="text-xl text-center md:text-3xl lg:text-4xl xl:text-5xl font-bold mt-5 lg:mt-10 my-5 lg:my-10 px-10 duration-300">
                         <span className="">Your </span>
                         <span className="text-[#B3845A]">Reviews</span>

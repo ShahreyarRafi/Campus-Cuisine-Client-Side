@@ -63,10 +63,24 @@ const router = createBrowserRouter([
                 element: <DetailsPage></DetailsPage>,
                 loader: ({ params }) => fetch(`http://localhost:5000/meals/${params.id}`)
             },
+
+
             {
-                path: 'user/dashboard',
-                element: <UserDashboard></UserDashboard>
+                path: 'cart',
+                element: (
+                    <PrivateRoute>
+                        <CartPage></CartPage>
+                    </PrivateRoute>
+                ),
+                // loader: () => fetch('http://localhost:5000/cartItems'),
             },
+
+        ]
+    },
+    {
+        path: 'dashboard',
+        element: <UserDashboard></UserDashboard>,
+        children: [
             {
                 path: 'user/profile',
                 element: <UserProfile></UserProfile>
@@ -79,18 +93,8 @@ const router = createBrowserRouter([
                 path: 'user/reviews',
                 element: <UserReviews></UserReviews>
             },
-            {
-                path: 'cart',
-                element: (
-                    <PrivateRoute>
-                        <CartPage></CartPage>
-                    </PrivateRoute>
-                ),
-                // loader: () => fetch('http://localhost:5000/cartItems'),
-            },
-
         ]
-    }
+    },
 ])
 
 export default router

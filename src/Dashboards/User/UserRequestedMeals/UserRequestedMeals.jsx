@@ -61,8 +61,8 @@ const UserRequestedMeals = () => {
 
     return (
         <div>
-            <div className='w-full min-h-[69vh] flex justify-center items-center bg-[#1965a423]'>
-                <div className="font-primary max-w-[1700px] w-full py-10 px-10 mx-auto duration-300">
+            <div className='w-full min-h-screen flex justify-center items-center bg-[#1965a423]'>
+                <div className="font-primary max-w-[1700px] w-full px-10 mx-auto duration-300">
                     <h1 className="text-xl text-center md:text-3xl lg:text-4xl xl:text-5xl font-bold mt-5 lg:mt-10 my-5 lg:my-10 px-10 duration-300">
                         <span className="">Your Requested </span>
                         <span className="text-[#B3845A]">Meals</span>
