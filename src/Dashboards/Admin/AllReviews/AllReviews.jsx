@@ -10,6 +10,7 @@ const AllReviews = () => {
         order: 'desc', // Default order is descending
     });
 
+
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -44,6 +45,7 @@ const AllReviews = () => {
         fetchData();
     }, []);
 
+
     const handleDeleteReview = async (mealId, reviewId) => {
         try {
             const axiosPublic = useAxiosPublic();
@@ -60,12 +62,14 @@ const AllReviews = () => {
         }
     };
 
+    
     const handleSort = (field) => {
         setSortBy((prevSort) => ({
             field,
             order: prevSort.field === field && prevSort.order === 'asc' ? 'desc' : 'asc',
         }));
     };
+
 
     const sortedLogs = [...logs].sort((a, b) => {
         const orderMultiplier = sortBy.order === 'asc' ? 1 : -1;
@@ -120,7 +124,6 @@ const AllReviews = () => {
                                                 </span>
                                             )}
                                         </button>
-
                                         <h5 className="max-w-[80px] w-full mr-10">Ratings</h5>
                                         <h5 className="w-[140%] mr-10">Comment</h5>
                                         <h5 className="max-w-[80px] w-full mr-5">View Meal</h5>

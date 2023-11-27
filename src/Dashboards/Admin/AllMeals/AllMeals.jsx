@@ -86,8 +86,6 @@ const AllMeals = () => {
     };
 
 
-
-
     return (
         <div>
             <div className="flex flex-col items-center justify-center py-10 bg-[#1965a423] w-full font-primary">
