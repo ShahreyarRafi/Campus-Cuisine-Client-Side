@@ -5,6 +5,10 @@ import { Link } from 'react-router-dom';
 const AllReviews = () => {
     const [logs, setLogs] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [sortBy, setSortBy] = useState({
+        field: 'liked_count', // Default sort by likes
+        order: 'desc', // Default order is descending
+    });
 
     useEffect(() => {
         const fetchData = async () => {
@@ -12,24 +16,22 @@ const AllReviews = () => {
                 const axiosPublic = useAxiosPublic();
                 const { data: meals = [] } = await axiosPublic.get(`/meals`);
 
-                const mealLogs = meals.map((meal) => {
-                    return {
-                        meal_id: meal._id,
-                        mealTitle: meal.title,
-                        liked_count: meal.liked_count,
-                        review_count: meal.review_count,
-                        reviews: meal.reviews.map((review) => ({
-                            review_id: review.review_id,
-                            meal_id: review.meal_id,
-                            reviewerName: review.name,
-                            reviewerEmail: review.email,
-                            liked_count: review.liked_count,
-                            review_count: review.review_count,
-                            ratings: review.ratings,
-                            reviewText: review.review_text,
-                        })),
-                    };
-                });
+                const mealLogs = meals.map((meal) => ({
+                    meal_id: meal._id,
+                    mealTitle: meal.title,
+                    liked_count: meal.liked_count,
+                    review_count: meal.review_count,
+                    reviews: meal.reviews.map((review) => ({
+                        review_id: review.review_id,
+                        meal_id: review.meal_id,
+                        reviewerName: review.name,
+                        reviewerEmail: review.email,
+                        liked_count: review.liked_count,
+                        review_count: review.review_count,
+                        ratings: review.ratings,
+                        reviewText: review.review_text,
+                    })),
+                }));
 
                 setLogs(mealLogs);
             } catch (error) {
@@ -42,15 +44,11 @@ const AllReviews = () => {
         fetchData();
     }, []);
 
-    // Delete a review
     const handleDeleteReview = async (mealId, reviewId) => {
-        console.log(mealId, reviewId);
         try {
             const axiosPublic = useAxiosPublic();
-            // Adjust the API endpoint based on your server implementation
             await axiosPublic.delete(`/meals/${mealId}/reviews/${reviewId}`);
 
-            // Update the local state to reflect the deleted review
             setLogs((prevLogs) =>
                 prevLogs.map((log) => ({
                     ...log,
@@ -61,6 +59,21 @@ const AllReviews = () => {
             console.error('Error deleting review:', error);
         }
     };
+
+    const handleSort = (field) => {
+        setSortBy((prevSort) => ({
+            field,
+            order: prevSort.field === field && prevSort.order === 'asc' ? 'desc' : 'asc',
+        }));
+    };
+
+    const sortedLogs = [...logs].sort((a, b) => {
+        const orderMultiplier = sortBy.order === 'asc' ? 1 : -1;
+
+        if (a[sortBy.field] < b[sortBy.field]) return -1 * orderMultiplier;
+        if (a[sortBy.field] > b[sortBy.field]) return 1 * orderMultiplier;
+        return 0;
+    });
 
     return (
         <div className='font-primary bg-[#1965a423] px-5'>
@@ -79,9 +92,35 @@ const AllReviews = () => {
                             <div className="w-full bg-white rounded-2xl overflow-hidden sm:shadow-lg my-5 duration-300">
                                 <div className="hidden xl:block bg-[#1965a44b] duration-300">
                                     <div className="flex items-center justify-between font-semibold border border-gray-100 px-10 py-5">
-                                        <h5 className="w-[140%] mr-10">Meal Title</h5>
-                                        <h5 className="max-w-[80px] w-full mr-10">Likes</h5>
-                                        <h5 className="max-w-[80px] w-full mr-10">Reviews</h5>
+                                        <h5
+                                            className={`w-[140%] mr-10 cursor-pointer ${sortBy.field === 'mealTitle' && 'active'}`}
+                                            onClick={() => handleSort('mealTitle')}
+                                        >
+                                            Meal Title
+                                        </h5>
+                                        <button
+                                            className={`sort-button max-w-[80px] w-full mr-10 ${sortBy.field === 'liked_count' && 'active'}`}
+                                            onClick={() => handleSort('liked_count')}
+                                        >
+                                            Likes
+                                            {sortBy.field === 'liked_count' && (
+                                                <span className={`arrow ${sortBy.order === 'asc' ? 'up' : 'down'}`}>
+                                                    {sortBy.order === 'asc' ? '▲' : '▼'}
+                                                </span>
+                                            )}
+                                        </button>
+                                        <button
+                                            className={`sort-button max-w-[80px] w-full mr-10 ${sortBy.field === 'review_count' && 'active'}`}
+                                            onClick={() => handleSort('review_count')}
+                                        >
+                                            Reviews
+                                            {sortBy.field === 'review_count' && (
+                                                <span className={`arrow ${sortBy.order === 'asc' ? 'up' : 'down'}`}>
+                                                    {sortBy.order === 'asc' ? '▲' : '▼'}
+                                                </span>
+                                            )}
+                                        </button>
+
                                         <h5 className="max-w-[80px] w-full mr-10">Ratings</h5>
                                         <h5 className="w-[140%] mr-10">Comment</h5>
                                         <h5 className="max-w-[80px] w-full mr-5">View Meal</h5>
@@ -89,16 +128,16 @@ const AllReviews = () => {
                                     </div>
                                 </div>
                                 <div className="flex-1 sm:flex-none">
-                                    {logs.flatMap((log, mealIndex) =>
+                                    {sortedLogs.flatMap((log, mealIndex) =>
                                         log.reviews.map((review, reviewIndex) => (
                                             <div key={`meal-${mealIndex}-review-${reviewIndex}`}>
                                                 <div className="flex flex-col xl:flex-row items-start xl:items-center justify-start xl:justify-between border border-gray-100 hover:bg-[#193ea417] px-10 py-5 duration-300">
-                                                    <h5 className="w-[140%] mr-10 text-lg font-semibold line-clamp-1 truncate" >{log.mealTitle}</h5>
+                                                    <h5 className="w-[140%] mr-10 text-lg font-semibold line-clamp-1 truncate">{log.mealTitle}</h5>
                                                     <h5 className="max-w-[80px] w-full mr-10">{log.liked_count}</h5>
                                                     <h5 className="max-w-[80px] w-full mr-10">{log.review_count}</h5>
                                                     <h5 className="max-w-[80px] w-full mr-10">{review.ratings}</h5>
                                                     <h5 className="w-[140%] mr-10 truncate">{review.reviewText}</h5>
-                                                    <Link to ={`/meals/${log.meal_id}`}
+                                                    <Link to={`/meals/${log.meal_id}`}
                                                         className='max-w-[80px] w-full font-bold text-[#1965a4be] hover:text-sky-400 mr-5 duration-300'
                                                     >
                                                         View Meal
