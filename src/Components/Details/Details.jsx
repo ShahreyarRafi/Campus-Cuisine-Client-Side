@@ -148,6 +148,24 @@ const Details = ({ meal }) => {
                 // Assuming the server responds with the updated meal data
                 // You may want to handle the response accordingly
                 console.log(data);
+                fetch(`http://localhost:5000/api/review-count/${_id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'content-type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        liked_count: review_count + 1
+                    })
+                })
+                    .then(res => res.json())
+                    .then(data => {
+                        // Handle the response from the server if needed
+                    })
+                    .catch(error => {
+                        console.error("Error updating like count:", error);
+                        // Handle error
+                    });
+
             })
             .catch(error => {
                 console.error("Error submitting review:", error);
