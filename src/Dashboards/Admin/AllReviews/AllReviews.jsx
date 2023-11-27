@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import useAxiosPublic from '../../../Hook/useAxiosPublic/useAxiosPublic';
+import { Link } from 'react-router-dom';
 
 const AllReviews = () => {
     const [logs, setLogs] = useState([]);
@@ -13,12 +14,15 @@ const AllReviews = () => {
 
                 const mealLogs = meals.map((meal) => {
                     return {
+                        meal_id: meal._id,
+                        mealTitle: meal.title,
+                        liked_count: meal.liked_count,
+                        review_count: meal.review_count,
                         reviews: meal.reviews.map((review) => ({
                             review_id: review.review_id,
                             meal_id: review.meal_id,
                             reviewerName: review.name,
                             reviewerEmail: review.email,
-                            mealTitle: review.title,
                             liked_count: review.liked_count,
                             review_count: review.review_count,
                             ratings: review.ratings,
@@ -49,6 +53,7 @@ const AllReviews = () => {
             // Update the local state to reflect the deleted review
             setLogs((prevLogs) =>
                 prevLogs.map((log) => ({
+                    ...log,
                     reviews: log.reviews.filter((review) => !(review?.meal_id === mealId && review.review_id === reviewId)),
                 }))
             );
@@ -56,7 +61,6 @@ const AllReviews = () => {
             console.error('Error deleting review:', error);
         }
     };
-
 
     return (
         <div className='font-primary bg-[#1965a423] px-5'>
@@ -75,11 +79,12 @@ const AllReviews = () => {
                             <div className="w-full bg-white rounded-2xl overflow-hidden sm:shadow-lg my-5 duration-300">
                                 <div className="hidden xl:block bg-[#1965a44b] duration-300">
                                     <div className="flex items-center justify-between font-semibold border border-gray-100 px-10 py-5">
-                                        <h5 className="w-[160%] mr-10">Meal Title</h5>
-                                        <h5 className="w-full mr-10">Likes</h5>
-                                        <h5 className="w-full mr-10">Reviews</h5>
-                                        <h5 className="w-full mr-10">Ratings</h5>
-                                        <h5 className="w-[120%] mr-10">Comment</h5>
+                                        <h5 className="w-[140%] mr-10">Meal Title</h5>
+                                        <h5 className="max-w-[80px] w-full mr-10">Likes</h5>
+                                        <h5 className="max-w-[80px] w-full mr-10">Reviews</h5>
+                                        <h5 className="max-w-[80px] w-full mr-10">Ratings</h5>
+                                        <h5 className="w-[140%] mr-10">Comment</h5>
+                                        <h5 className="max-w-[80px] w-full mr-5">View Meal</h5>
                                         <h5 className="max-w-[80px] w-full ">Delete</h5>
                                     </div>
                                 </div>
@@ -88,14 +93,19 @@ const AllReviews = () => {
                                         log.reviews.map((review, reviewIndex) => (
                                             <div key={`meal-${mealIndex}-review-${reviewIndex}`}>
                                                 <div className="flex flex-col xl:flex-row items-start xl:items-center justify-start xl:justify-between border border-gray-100 hover:bg-[#193ea417] px-10 py-5 duration-300">
-                                                    <h5 className="w-[160%] mr-10 text-lg font-semibold line-clamp-1 truncate" >{review.title}</h5>
-                                                    <h5 className="w-full mr-10">{review.liked_count}</h5>
-                                                    <h5 className="w-full mr-10">{review.review_count}</h5>
-                                                    <h5 className="w-full mr-10">{review.ratings}</h5>
-                                                    <h5 className="w-[120%] mr-10 truncate">{review.reviewText}</h5>
+                                                    <h5 className="w-[140%] mr-10 text-lg font-semibold line-clamp-1 truncate" >{log.mealTitle}</h5>
+                                                    <h5 className="max-w-[80px] w-full mr-10">{log.liked_count}</h5>
+                                                    <h5 className="max-w-[80px] w-full mr-10">{log.review_count}</h5>
+                                                    <h5 className="max-w-[80px] w-full mr-10">{review.ratings}</h5>
+                                                    <h5 className="w-[140%] mr-10 truncate">{review.reviewText}</h5>
+                                                    <Link to ={`/meals/${log.meal_id}`}
+                                                        className='max-w-[80px] w-full font-bold text-[#1965a4be] hover:text-sky-400 mr-5 duration-300'
+                                                    >
+                                                        View Meal
+                                                    </Link>
                                                     <button
-                                                        className='max-w-[80px] w-full  text-start font-bold text-red-600 hover:text-red-400 duration-300'
-                                                        onClick={() => handleDeleteReview(review.meal_id, review.review_id)}
+                                                        className='max-w-[80px] w-full font-bold text-red-600 hover:text-red-400 duration-300'
+                                                        onClick={() => handleDeleteReview(log.meal_id, review.review_id)}
                                                     >
                                                         Delete
                                                     </button>
