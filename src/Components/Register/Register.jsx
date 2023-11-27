@@ -43,6 +43,7 @@ const Register = () => {
                             name,
                             photoUrl,
                             badge: "Bronze",
+                            role: "Member",
                         }),
                     });
 

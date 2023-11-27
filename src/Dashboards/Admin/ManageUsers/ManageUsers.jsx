@@ -1,20 +1,43 @@
-import React from 'react';
+import React, { useState } from 'react';
 import useAxiosPublic from '../../../Hook/useAxiosPublic/useAxiosPublic';
 import { useQuery } from 'react-query';
 
 const ManageUsers = () => {
+    const [usersData, setUsersData] = useState([]);
 
     const axiosPublic = useAxiosPublic();
+
     const { data: users = [] } = useQuery({
         queryKey: ['users'],
         queryFn: async () => {
             // const res = await axiosSecure.get(`/users/${user?.email}`);
             const res = await axiosPublic.get(`/users`);
-            return res.data;
+            return setUsersData(res.data);
         }
     })
 
-    console.log(users);
+    const handleMakeAdmin = async (userId) => {
+        console.log(userId);
+
+        try {
+
+
+                await axiosPublic.patch(`/users/${userId}`, {
+                    role: 'Admin',
+                });
+
+
+                const updatedUsers = await axiosPublic.get(`/users`);
+                setUsersData(updatedUsers.data);
+
+        } catch (error) {
+            console.error("Error publishing meal:", error);
+            // Handle error (e.g., show an error message to the user)
+        }
+    };
+
+
+    console.log(usersData);
 
     return (
         <div>
@@ -31,16 +54,23 @@ const ManageUsers = () => {
                                     <div className="flex items-center justify-between font-semibold border border-gray-100 px-10 py-5">
                                         <h5 className="w-[160%] mr-10">User name</h5>
                                         <h5 className="w-full mr-10">User email</h5>
+                                        <h5 className="w-full mr-10">Role</h5>
                                         <h5 className="w-full mr-10">Make admin</h5>
                                         <h5 className="w-full mr-10">Subscription Status(Membership)</h5>
                                     </div>
                                 </div>
                                 <div className="flex-1 sm:flex-none">
-                                    {users?.map((user) => (
+                                    {usersData?.map((user) => (
                                         <div key={user._id} className="flex flex-col xl:flex-row items-start xl:items-center justify-start xl:justify-between border border-gray-100 hover:bg-[#193ea417] px-10 py-5 duration-300">
                                             <h5 className="w-[160%] mr-10 text-lg font-semibold line-clamp-1" >{user.name}</h5>
                                             <h5 className="w-full mr-10">{user.email}</h5>
-                                            <h5 className="w-full mr-10">Status Here</h5>
+                                            <h5 className="w-full mr-10">{user.role}</h5>
+                                            <button
+                                                className='w-full mr-10 font-bold text-red-600 hover:text-red-400 duration-300'
+                                                onClick={() => handleMakeAdmin(user._id)}
+                                            >
+                                                Make Admin
+                                            </button>
                                             <h5 className="w-full mr-10">{user.badge}</h5>
                                             {/* <button onClick={(e) => handleCancel(e, users._id)} className="font-bold text-[#1965a4be] hover:text-red-400 duration-300">Cancel</button> */}
                                         </div>
