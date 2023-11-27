@@ -8,15 +8,21 @@ import ContactUsPage from "../Pages/ContactUsPage/ContactUsPage";
 import CartPage from "../Pages/CartPage/CartPage";
 import ErrorPage from "../Pages/ErrorPage/ErrorPage";
 import AboutUsPage from "../Pages/AboutUsPage/AboutUsPage";
-import Details from "../Components/Details/Details";
 import DetailsPage from "../Pages/DetailsPage/DetailsPage";
-import AllMealsPage from "../Pages/AllMealsPage/AllMealsPage";
+import MealsPage from "../Pages/MealsPage/MealsPage";
 import UpcomingPage from "../Pages/UpcomingPage/UpcomingPage";
 import UserDashboard from "../Dashboards/User/UserDashboard/UserDashboard";
 import UserProfile from "../Dashboards/User/UserProfile/UserProfile";
 import UserRequestedMeals from "../Dashboards/User/UserRequestedMeals/UserRequestedMeals";
 import UserReviews from "../Dashboards/User/UserReviews/UserReviews";
 import AdminDashboard from "../Dashboards/Admin/AdminDashboard/AdminDashboard";
+import ManageUsers from "../Dashboards/Admin/ManageUsers/ManageUsers";
+import AddMeal from "../Dashboards/Admin/AddMeal/AddMeal";
+import AllReviews from "../Dashboards/Admin/AllReviews/AllReviews";
+import ServeMeals from "../Dashboards/Admin/ServeMeals/ServeMeals";
+import UpcomingMeals from "../Dashboards/Admin/UpcomingMeals/UpcomingMeals";
+import AllMeals from "../Dashboards/Admin/AllMeals/AllMeals";
+import AdminProfile from "../Dashboards/Admin/AdminProfile/AdminProfile";
 
 
 
@@ -52,7 +58,7 @@ const router = createBrowserRouter([
             },
             {
                 path: 'meals',
-                element: <AllMealsPage></AllMealsPage>,
+                element: <MealsPage></MealsPage>,
                 loader: () => fetch('http://localhost:5000/meals')
             },
             {
@@ -101,17 +107,34 @@ const router = createBrowserRouter([
         element: <AdminDashboard></AdminDashboard>,
         children: [
             {
-                path: 'user/profile',
-                element: <UserProfile></UserProfile>
+                path: 'admin-profile',
+                element: <AdminProfile></AdminProfile>
             },
             {
-                path: 'user/requested-meals',
-                element: <UserRequestedMeals></UserRequestedMeals>
+                path: 'manage-users',
+                element: <ManageUsers></ManageUsers>
             },
             {
-                path: 'user/reviews',
-                element: <UserReviews></UserReviews>
+                path: 'add-meal',
+                element: <AddMeal></AddMeal>
             },
+            {
+                path: 'all-meals',
+                element: <AllMeals></AllMeals>
+            },
+            {
+                path: 'all-reviews',
+                element: <AllReviews></AllReviews>
+            },
+            {
+                path: 'serve-meals',
+                element: <ServeMeals></ServeMeals>
+            },
+            {
+                path: 'upcoming-meals',
+                element: <UpcomingMeals></UpcomingMeals>
+            },
+
         ]
     },
 ])

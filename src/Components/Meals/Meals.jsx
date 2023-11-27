@@ -13,7 +13,7 @@ let tabs = [
     { id: "Dinner", label: "Dinner" },
 ];
 
-const AllMeals = ({ allMeals }) => {
+const Meals = ({ allMeals }) => {
     const [searchValue, setSearchValue] = useState('');
     const [filteredMeals, setFilteredMeals] = useState([]);
     const [activeTab, setActiveTab] = useState('All');
@@ -157,4 +157,4 @@ const AllMeals = ({ allMeals }) => {
     );
 };
 
-export default AllMeals;
+export default Meals;

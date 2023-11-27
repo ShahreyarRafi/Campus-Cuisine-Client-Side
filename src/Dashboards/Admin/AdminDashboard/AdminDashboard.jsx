@@ -36,28 +36,60 @@ const AdminDashboard = () => {
                         <div className="divider mb-7"></div>
                         <div className=" flex flex-col justify-between items-center gap-7">
                             <NavLink
-                                to="/dashboard/user/profile"
+                                to="/admin/dashboard/admin-profile"
                                 className={({ isActive, isPending }) =>
                                     isPending ? "pending" : isActive ? "text-[#FFFFF6] bg-[#062230] px-5 py-2 rounded" : "text-[#FFFFF6] text-center"
                                 }
                             >
-                                My Profile
+                                Admin Profile
                             </NavLink>
                             <NavLink
-                                to="/dashboard/user/requested-meals"
+                                to="/admin/dashboard/manage-users"
                                 className={({ isActive, isPending }) =>
                                     isPending ? "pending" : isActive ? "text-[#FFFFF6] bg-[#062230] px-5 py-2 rounded" : "text-[#FFFFF6] text-center"
                                 }
                             >
-                                Requested Meals
+                                Manage Users
                             </NavLink>
                             <NavLink
-                                to="/dashboard/user/reviews"
+                                to="/admin/dashboard/add-meal"
                                 className={({ isActive, isPending }) =>
                                     isPending ? "pending" : isActive ? "text-[#FFFFF6] bg-[#062230] px-5 py-2 rounded" : "text-[#FFFFF6] text-center"
                                 }
                             >
-                                My Reviews
+                                Add Meal
+                            </NavLink>
+                            <NavLink
+                                to="/admin/dashboard/all-meals"
+                                className={({ isActive, isPending }) =>
+                                    isPending ? "pending" : isActive ? "text-[#FFFFF6] bg-[#062230] px-5 py-2 rounded" : "text-[#FFFFF6] text-center"
+                                }
+                            >
+                                All Meals
+                            </NavLink>
+                            <NavLink
+                                to="/admin/dashboard/all-reviews"
+                                className={({ isActive, isPending }) =>
+                                    isPending ? "pending" : isActive ? "text-[#FFFFF6] bg-[#062230] px-5 py-2 rounded" : "text-[#FFFFF6] text-center"
+                                }
+                            >
+                                All Reviews
+                            </NavLink>
+                            <NavLink
+                                to="/admin/dashboard/serve-meals"
+                                className={({ isActive, isPending }) =>
+                                    isPending ? "pending" : isActive ? "text-[#FFFFF6] bg-[#062230] px-5 py-2 rounded" : "text-[#FFFFF6] text-center"
+                                }
+                            >
+                                Serve Meals
+                            </NavLink>
+                            <NavLink
+                                to="/admin/dashboard/upcoming-meals"
+                                className={({ isActive, isPending }) =>
+                                    isPending ? "pending" : isActive ? "text-[#FFFFF6] bg-[#062230] px-5 py-2 rounded" : "text-[#FFFFF6] text-center"
+                                }
+                            >
+                                Upcoming Meals
                             </NavLink>
                         </div>
 
