@@ -15,27 +15,24 @@ const ManageUsers = () => {
             return setUsersData(res.data);
         }
     })
-
-    const handleMakeAdmin = async (userId) => {
-        console.log(userId);
-
+    
+    const handleMakeAdmin = async (usersEmail, userName) => {
+        console.log(usersEmail, userName);
+    
         try {
-
-
-                await axiosPublic.patch(`/users/${userId}`, {
-                    role: 'Admin',
-                });
-
-
-                const updatedUsers = await axiosPublic.get(`/users`);
-                setUsersData(updatedUsers.data);
-
+            await axiosPublic.patch(`/users/${usersEmail}/${userName}`, {
+                role: 'Admin',
+            });
+    
+            const updatedUsers = await axiosPublic.get(`/users`);
+            setUsersData(updatedUsers.data);
+    
         } catch (error) {
-            console.error("Error publishing meal:", error);
+            console.error("Error updating user role:", error);
             // Handle error (e.g., show an error message to the user)
         }
     };
-
+    
 
     console.log(usersData);
 
@@ -67,7 +64,7 @@ const ManageUsers = () => {
                                             <h5 className="w-full mr-10">{user.role}</h5>
                                             <button
                                                 className='w-full mr-10 font-bold text-red-600 hover:text-red-400 duration-300'
-                                                onClick={() => handleMakeAdmin(user._id)}
+                                                onClick={() => handleMakeAdmin(user.email, user.name)}
                                             >
                                                 Make Admin
                                             </button>

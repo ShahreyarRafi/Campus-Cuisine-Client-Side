@@ -153,7 +153,7 @@ const AllMeals = () => {
                                                 <h5 className="w-full mr-10">{meal.admin_email}</h5>
                                                 <h5 className="w-full mr-10">Update</h5>
                                                 <button
-                                                    className="text-[#B3845A] w-full font-bold mx-2 text-center"
+                                                    className="text-[#B3845A] w-full mr-10 font-bold mx-2 text-center"
                                                     onClick={() => handleDelete(meal._id)}
                                                 >
                                                     Delete
