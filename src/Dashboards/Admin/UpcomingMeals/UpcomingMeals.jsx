@@ -193,23 +193,26 @@ const UpcomingMeals = () => {
                                                 <h5 className="max-w-[80px] w-full mr-10">{meal.liked_count}</h5>
                                                 <h5 className="w-full mr-10">{meal.admin_name}</h5>
                                                 <h5 className="w-full mr-10">{meal.admin_email}</h5>
-                                                <button 
-                                                className='text-[#B3845A] w-full font-bold mx-2text-center'
-                                                onClick={() => handlePublish(meal._id)}
-                                                >
-                                                    Publish</button>
                                                 <button
-                                                    className="text-[#B3845A] w-full font-bold mx-2 text-center"
+                                                    className={`text-[#B3845A] w-full mr-10 font-bold mx-2 text-center ${meal.liked_count < 10 ? 'cursor-not-allowed opacity-50' : ''}`}
+                                                    onClick={() => handlePublish(meal._id)}
+                                                    disabled={meal.liked_count < 10}
+                                                >
+                                                    Publish
+                                                </button>
+                                                <button
+                                                    className="text-[#B3845A] w-full mr-10 font-bold mx-2 text-center"
                                                     onClick={() => handleDelete(meal._id)}
                                                 >
                                                     Delete
                                                 </button>
                                                 <Link className='w-full mr-10 text-center' to={`/meals/${meal._id}`}>
-                                                    <button className='text-[#B3845A] w-full font-bold mx-2text-center'>View Details</button>
+                                                    <button className='text-[#B3845A] w-full font-bold mx-2 text-center'>View Details</button>
                                                 </Link>
                                             </div>
                                         ))}
                                     </div>
+
                                 </div>
                             </div>
                         </body>
