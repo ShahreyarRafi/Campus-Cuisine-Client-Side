@@ -36,6 +36,14 @@ const AdminDashboard = () => {
                         <div className="divider mb-7"></div>
                         <div className=" flex flex-col justify-between items-center gap-7">
                             <NavLink
+                                to="/"
+                                className={({ isActive, isPending }) =>
+                                    isPending ? "pending" : isActive ? "text-[#FFFFF6] bg-[#062230] px-5 py-2 rounded" : "text-[#FFFFF6] text-center"
+                                }
+                            >
+                                Back To Home
+                            </NavLink>
+                            <NavLink
                                 to="/admin/dashboard/admin-profile"
                                 className={({ isActive, isPending }) =>
                                     isPending ? "pending" : isActive ? "text-[#FFFFF6] bg-[#062230] px-5 py-2 rounded" : "text-[#FFFFF6] text-center"
