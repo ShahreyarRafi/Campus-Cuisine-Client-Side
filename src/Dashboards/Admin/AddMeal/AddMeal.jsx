@@ -130,7 +130,10 @@ const AddMeal = () => {
         <div>
             <div className="bg-[#1965a423] px-5 md:px-24 py-24 font-primary duration-300">
                 <div className='max-w-6xl mx-auto'>
-                    <h1 className="text-4xl font-bold text-center mb-16 "><span className="">Please tell us the details about the </span><span className="text-[#19a463]">job</span> you want to post</h1>
+                    <h1 className="text-xl text-center md:text-3xl lg:text-4xl xl:text-5xl font-bold mt-5 lg:mt-10 my-5 lg:my-10 px-10 duration-300">
+                        <span className="">Add a </span>
+                        <span className="text-[#B3845A]">Meal</span>
+                    </h1>
                     <form onSubmit={handleSubmit}>
                         {/* Banner Image and Company Logo row */}
                         <div className="md:flex mb-5 md:mb-8">
@@ -243,14 +246,14 @@ const AddMeal = () => {
                         <button
                             type="button"
                             onClick={(e) => handleSubmit(e, 'addMeal')}
-                            className="btn hover-bg-[#ffc362] mb-4 w-full text-white text-lg bg-[#19a463] hover:bg-[#19a463bb]"
+                            className="btn mb-4 w-full text-white text-lg bg-[#B3845A] hover:bg-[#ebb587]"
                         >
                             Add Meal
                         </button>
                         <button
                             type="button"
                             onClick={(e) => handleSubmit(e, 'addToUpcoming')}
-                            className="btn hover-bg-[#ffc362] w-full text-white text-lg bg-[#19a463] hover:bg-[#19a463bb]"
+                            className="btn w-full text-white text-lg bg-[#B3845A] hover:bg-[#ebb587]"
                         >
                             Add to Upcoming
                         </button>
