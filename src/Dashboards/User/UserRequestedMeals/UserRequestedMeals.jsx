@@ -120,7 +120,7 @@ const UserRequestedMeals = () => {
                                             <h5 className="w-[160%] mr-10 text-lg font-semibold line-clamp-1" data-tooltip-id="all-meal-page-meal-title" data-tooltip-content={meal.meal_title}>{meal.title}</h5>
                                             <h5 className="w-full mr-10">{meal.liked_count}</h5>
                                             <h5 className="w-full mr-10">{meal.review_count}</h5>
-                                            <h5 className="w-full mr-10">Status Here</h5>
+                                            <h5 className="w-full mr-10">{meal.delivery_status}</h5>
                                             <button onClick={(e) => handleCancel(e, meal._id)} className="font-bold text-[#1965a4be] hover:text-red-400 duration-300">Cancel</button>
                                         </div>
                                     ))}

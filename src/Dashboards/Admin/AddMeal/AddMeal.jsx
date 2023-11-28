@@ -29,15 +29,6 @@ const AddMeal = () => {
     const handleSubmit = async (event, action) => {
         event.preventDefault();
 
-        // const form = event.target;
-        // const image = form.image.value;
-        // const title = form.title.value;
-        // const ingredients = form.ingredients.value;
-        // const category = form.meal_category.value;
-        // const price = form.price.value;
-        // const description = form.meal_description.value;
-
-
         const newMeal = {
             image,
             title,

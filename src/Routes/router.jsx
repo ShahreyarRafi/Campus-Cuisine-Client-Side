@@ -23,6 +23,7 @@ import ServeMeals from "../Dashboards/Admin/ServeMeals/ServeMeals";
 import UpcomingMeals from "../Dashboards/Admin/UpcomingMeals/UpcomingMeals";
 import AllMeals from "../Dashboards/Admin/AllMeals/AllMeals";
 import AdminProfile from "../Dashboards/Admin/AdminProfile/AdminProfile";
+import UpdateMeal from "../Dashboards/Admin/UpdateMeal/UpdateMeal";
 
 
 
@@ -133,6 +134,10 @@ const router = createBrowserRouter([
             {
                 path: 'upcoming-meals',
                 element: <UpcomingMeals></UpcomingMeals>
+            },
+            {
+                path: 'update-meal/:id',
+                element: <UpdateMeal></UpdateMeal>
             },
 
         ]

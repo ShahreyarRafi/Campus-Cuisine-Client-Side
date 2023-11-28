@@ -50,12 +50,12 @@ const UpcomingMeals = () => {
     useEffect(() => {
         const filtered = allMeals.filter(
             (meal) =>
-                (activeTab === 'All' || meal.category.toLowerCase() === activeTab.toLowerCase()) &&
-                meal.meal_status.toLowerCase() === 'upcoming'
+                (activeTab === 'All' || meal?.category === activeTab) &&
+                meal?.meal_status === 'Upcoming'
         );
 
         const searchFiltered = filtered.filter((meal) =>
-            meal.title.toLowerCase().includes(searchValue.toLowerCase())
+            meal?.title.toLowerCase().includes(searchValue?.toLowerCase())
         );
 
         const sortedMeals = searchFiltered.sort((a, b) => {
