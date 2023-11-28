@@ -24,20 +24,32 @@ const ServeMeals = () => {
 
 
 
-
     const handleDelivery = async (e, mealId) => {
         e.preventDefault();
-        
+
         console.log(mealId);
 
         try {
-            await axiosPublic.patch(`/meal/${mealId}`, {
-                delivery_status: "Delivered"
-            });
+            // Fetch the current state of the meal
+            const meal = reqMealsData.find(item => item._id === mealId);
 
-            const res = await axiosPublic.get(`/api/request-meal`);
-            return setReqMealsData(res.data);
+            // Check if the meal is already delivered
+            if (meal.delivery_status === "Delivered") {
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Already Served',
+                    text: 'This meal has already been served.',
+                });
+            } else {
+                // Update the delivery status if the meal is not already delivered
+                await axiosPublic.patch(`/meal/${mealId}`, {
+                    delivery_status: "Delivered"
+                });
 
+                // Fetch the updated list of meals
+                const res = await axiosPublic.get(`/api/request-meal`);
+                setReqMealsData(res.data);
+            }
         } catch (error) {
             console.error("Error updating user role:", error);
             // Handle error (e.g., show an error message to the user)
