@@ -15,24 +15,44 @@ const ManageUsers = () => {
             return setUsersData(res.data);
         }
     })
-    
-    const handleMakeAdmin = async (usersEmail, userName) => {
-        console.log(usersEmail, userName);
-    
+
+    const handleMakeAdmin = async (usersId) => {
+        console.log(usersId);
+
         try {
-            await axiosPublic.patch(`/users/${usersEmail}/${userName}`, {
+            await axiosPublic.patch(`/users/${usersId}`, {
                 role: 'Admin',
             });
-    
+
             const updatedUsers = await axiosPublic.get(`/users`);
             setUsersData(updatedUsers.data);
-    
+
         } catch (error) {
             console.error("Error updating user role:", error);
             // Handle error (e.g., show an error message to the user)
         }
     };
+
+    const [searchQuery, setSearchQuery] = useState('');
+
+
+    // Update your handleSearch function in ManageUsers component
+    const handleSearch = async (e) => {
+        e.preventDefault();
+        
+        try {
+            console.log('Search query:', searchQuery);
+            const response = await axiosPublic.get(`/find-user?searchQuery=${searchQuery}`);
+            const searchedUsers = response.data;
+            setUsersData(searchedUsers);
+        } catch (error) {
+            console.error("Error searching users:", error);
+        }
+    };
     
+
+
+
 
     console.log(usersData);
 
@@ -41,9 +61,19 @@ const ManageUsers = () => {
             <div className='w-full min-h-screen flex justify-center items-center bg-[#1965a423]'>
                 <div className="font-primary max-w-[1700px] w-full px-10 mx-auto duration-300">
                     <h1 className="text-xl text-center md:text-3xl lg:text-4xl xl:text-5xl font-bold mt-5 lg:mt-10 my-5 lg:my-10 px-10 duration-300">
-                        <span className="">Your Requested </span>
-                        <span className="text-[#B3845A]">Meals</span>
+                        <span className="">Manage </span>
+                        <span className="text-[#B3845A]">Users</span>
                     </h1>
+                    <form onSubmit={handleSearch}>
+                        <input
+                            type="text"
+                            placeholder="Search by email or username"
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                        />
+                        <button type="submit">Search</button>
+                    </form>
+
                     <body className="flex items-center justify-center">
                         <div className="container duration-300">
                             <div className="w-full bg-white rounded-2xl overflow-hidden sm:shadow-lg my-5 duration-300">
@@ -63,11 +93,13 @@ const ManageUsers = () => {
                                             <h5 className="w-full mr-10">{user.email}</h5>
                                             <h5 className="w-full mr-10">{user.role}</h5>
                                             <button
-                                                className='w-full mr-10 font-bold text-red-600 hover:text-red-400 duration-300'
-                                                onClick={() => handleMakeAdmin(user.email, user.name)}
+                                                className={`w-full mr-10 font-bold text-red-600 hover:text-red-400 duration-300 ${user.role === 'Admin' ? 'cursor-not-allowed opacity-50' : ''}`}
+                                                onClick={() => handleMakeAdmin(user._id)}
+                                                disabled={user.role === 'Admin'}
                                             >
                                                 Make Admin
                                             </button>
+
                                             <h5 className="w-full mr-10">{user.badge}</h5>
                                             {/* <button onClick={(e) => handleCancel(e, users._id)} className="font-bold text-[#1965a4be] hover:text-red-400 duration-300">Cancel</button> */}
                                         </div>
