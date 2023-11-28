@@ -33,8 +33,7 @@ const AdminProfile = () => {
         }
     })
 
-
-    const currentUser = users.find(user => user.email === user?.email);
+    const currentUser = users.find(userData => userData.email === user.email);
 
     let badgeImage;
     switch (currentUser?.badge) {

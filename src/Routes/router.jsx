@@ -24,6 +24,7 @@ import UpcomingMeals from "../Dashboards/Admin/UpcomingMeals/UpcomingMeals";
 import AllMeals from "../Dashboards/Admin/AllMeals/AllMeals";
 import AdminProfile from "../Dashboards/Admin/AdminProfile/AdminProfile";
 import UpdateMeal from "../Dashboards/Admin/UpdateMeal/UpdateMeal";
+import Payment from "../Dashboards/User/Payment/Payment";
 
 
 
@@ -100,6 +101,10 @@ const router = createBrowserRouter([
             {
                 path: 'user/reviews',
                 element: <UserReviews></UserReviews>
+            },
+            {
+                path: 'user/payment',
+                element: <Payment></Payment>
             },
         ]
     },
