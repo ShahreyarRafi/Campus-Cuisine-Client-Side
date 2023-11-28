@@ -25,11 +25,10 @@ const AllMeals = () => {
     const { data: allMeals = [], isLoading } = useQuery({
         queryKey: ['meals'],
         queryFn: async () => {
-            // const res = await axiosSecure.get(`/users/${user?.email}`);
             const res = await axiosPublic.get(`/meals`);
             return res.data;
         }
-    })
+    });
 
     useEffect(() => {
         // Function to load more meals when scrolling down
@@ -54,15 +53,8 @@ const AllMeals = () => {
     }, []);
 
     useEffect(() => {
-        // Filter meals based on the selected category and exclude "Upcoming" meals
-        const filtered = allMeals.filter(
-            (meal) =>
-                (activeTab === 'All' || meal.category === activeTab) &&
-                meal.meal_status === 'Ready'
-        );
-
         // Filter meals based on the search input
-        const searchFiltered = filtered.filter((meal) =>
+        const searchFiltered = allMeals.filter((meal) =>
             meal.title.toLowerCase().includes(searchValue.toLowerCase())
         );
 
@@ -70,7 +62,7 @@ const AllMeals = () => {
         const slicedMeals = searchFiltered.slice(0, pageNumber * 10);
 
         setFilteredMeals(slicedMeals);
-    }, [allMeals, activeTab, searchValue, pageNumber]);
+    }, [allMeals, searchValue, pageNumber]);
 
     const handleDelete = async (mealId) => {
         try {
@@ -84,7 +76,6 @@ const AllMeals = () => {
             // Handle error (e.g., show an error message to the user)
         }
     };
-
 
     return (
         <div>
