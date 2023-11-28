@@ -10,7 +10,7 @@ const UserRequestedMeals = () => {
 
     const { user } = useContext(AuthContext);
     const [reqMealsData, setReqMealsData] = useState(null);
-    const axiosSecure = useAxiosPublic();
+    const axiosPublic = useAxiosPublic();
 
     // const { data: reqMeals = [] } = useQuery({
     //     queryKey: ['reqMeals'],
@@ -26,13 +26,32 @@ const UserRequestedMeals = () => {
     const { data: reqMeals = [] } = useQuery({
         queryKey: ['reqMeals'],
         queryFn: async () => {
-            const res = await axiosSecure.get(`/api/request-meal`);
+            const res = await axiosPublic.get(`/api/request-meal`);
             const userReqMeals = res.data.filter(meal => meal.user_email === user?.email);
             setReqMealsData(userReqMeals);
             return userReqMeals;
         },
-        enabled: Boolean(user?.email), // Ensures the query is only triggered when user.email is available
+        enabled: Boolean(user?.email),
     });
+
+
+
+    const handleDelivery = async (mealId) => {
+        console.log(mealId);
+
+        try {
+            await axiosPublic.patch(`/meal/${mealId}`, {
+                delivery_status: "Delivered"
+            });
+
+            const remaining = await axiosPublic.get(`/api/request-meal`);
+            setReqMealsData(remaining);
+
+        } catch (error) {
+            console.error("Error updating user role:", error);
+            // Handle error (e.g., show an error message to the user)
+        }
+    };
 
 
 
