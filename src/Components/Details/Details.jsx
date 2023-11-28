@@ -49,6 +49,7 @@ const handleMealReq = (
         ratings,
         review_count,
         liked_count,
+        delivery_status: 'Pending',
         admin_name,
         admin_email
     };

@@ -1,23 +1,39 @@
 import { useQuery } from "react-query";
 import useAxiosPublic from "../../../Hook/useAxiosPublic/useAxiosPublic";
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import Swal from "sweetalert2";
+import { AuthContext } from "../../../services/Firebase/AuthProvider";
 
 
 const UserRequestedMeals = () => {
 
+    const { user } = useContext(AuthContext);
     const [reqMealsData, setReqMealsData] = useState(null);
     const axiosSecure = useAxiosPublic();
+
+    // const { data: reqMeals = [] } = useQuery({
+    //     queryKey: ['reqMeals'],
+    //     queryFn: async () => {
+    //         // const res = await axiosSecure.get(`/users/${user?.email}`);
+    //         const res = await axiosSecure.get(`/api/request-meal`);
+    //         return setReqMealsData(res.data);
+    //     }
+    // })
+
+
 
     const { data: reqMeals = [] } = useQuery({
         queryKey: ['reqMeals'],
         queryFn: async () => {
-            // const res = await axiosSecure.get(`/users/${user?.email}`);
             const res = await axiosSecure.get(`/api/request-meal`);
-            return setReqMealsData(res.data);
-        }
-    })
+            const userReqMeals = res.data.filter(meal => meal.user_email === user?.email);
+            setReqMealsData(userReqMeals);
+            return userReqMeals;
+        },
+        enabled: Boolean(user?.email), // Ensures the query is only triggered when user.email is available
+    });
+
 
 
     const handleCancel = (e, mealId) => {
@@ -86,7 +102,7 @@ const UserRequestedMeals = () => {
                                             <h5 className="w-full mr-10">{meal.liked_count}</h5>
                                             <h5 className="w-full mr-10">{meal.review_count}</h5>
                                             <h5 className="w-full mr-10">Status Here</h5>
-                                            <button onClick={(e) => handleCancel(e, meal._id)}  className="font-bold text-[#1965a4be] hover:text-red-400 duration-300">Cancel</button>
+                                            <button onClick={(e) => handleCancel(e, meal._id)} className="font-bold text-[#1965a4be] hover:text-red-400 duration-300">Cancel</button>
                                         </div>
                                     ))}
                                 </div>
