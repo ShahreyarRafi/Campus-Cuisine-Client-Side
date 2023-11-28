@@ -45,13 +45,13 @@ const Meals = ({ allMeals }) => {
         // Filter meals based on the selected category and exclude "Upcoming" meals
         const filtered = allMeals.filter(
             (meal) =>
-                (activeTab === 'All' || meal.category.toLowerCase() === activeTab.toLowerCase()) &&
-                meal.meal_status.toLowerCase() === 'ready'
+                (activeTab === 'All' || meal?.category?.toLowerCase() === activeTab?.toLowerCase()) &&
+                meal?.meal_status?.toLowerCase() === 'ready'
         );
 
         // Filter meals based on the search input
         const searchFiltered = filtered.filter((meal) =>
-            meal.title.toLowerCase().includes(searchValue.toLowerCase())
+            meal?.title?.toLowerCase().includes(searchValue.toLowerCase())
         );
 
         // Slice the array to get only the meals for the current page
@@ -107,7 +107,7 @@ const Meals = ({ allMeals }) => {
                         <div className="container duration-300">
                             <div>
                                 <div className="w-full grid grid-cols-4 gap-7">
-                                    {filteredMeals.map((meal) => (
+                                    {filteredMeals?.map((meal) => (
                                         <div key={meal._id}>
                                             <Card sx={{ maxWidth: 345 }}>
                                                 <CardMedia
