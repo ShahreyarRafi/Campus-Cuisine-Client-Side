@@ -12,6 +12,7 @@ const handleMealReq = (
     event,
     user_id,
     user_email,
+    user_name,
     meal_id,
     image,
     title,
@@ -37,6 +38,7 @@ const handleMealReq = (
     const reqMealData = {
         user_id,
         user_email,
+        user_name,
         meal_id,
         image,
         title,
@@ -236,7 +238,7 @@ const Details = ({ meal }) => {
                         <p className='text-lg mb-4'><span className='font-bold mb-1 text-slate-700'>Reviews: </span> {meal.review_count}</p>
                         <div className='flex items-center gap-7'>
                             <button
-                                onClick={(event) => handleMealReq(event, user.uid, user.email, _id, image, title, description, ingredients, category, price, post_time, meal_status, ratings, review_count, liked_count, admin_name, admin_email)}
+                                onClick={(event) => handleMealReq(event, user.uid, user.email, user.displayName, _id, image, title, description, ingredients, category, price, post_time, meal_status, ratings, review_count, liked_count, admin_name, admin_email)}
                                 className={`bg-[#B3845A] hover:bg-[#ebb587] font-primary font-semibold text-xl text-white md:px-12 px-7 md:py-4 py-2 rounded ${meal_status === 'Upcoming' ? 'cursor-not-allowed opacity-50' : ''}`}
                                 disabled={meal_status === 'Upcoming'}
                             >

@@ -36,7 +36,6 @@ const ManageUsers = () => {
     const [searchQuery, setSearchQuery] = useState('');
 
 
-    // Update your handleSearch function in ManageUsers component
     const handleSearch = async (e) => {
         e.preventDefault();
 
