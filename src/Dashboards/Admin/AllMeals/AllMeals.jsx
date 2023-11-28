@@ -124,7 +124,6 @@ const AllMeals = () => {
                             ))}
                         </select>
                     </div>
-
                 </div>
                 <div className='w-full min-h-screen flex justify-center items-center bg-[#1965a423]]'>
                     <div className="font-primary max-w-[1700px] w-full px-10 mx-auto duration-300">

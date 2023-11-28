@@ -39,7 +39,7 @@ const ManageUsers = () => {
     // Update your handleSearch function in ManageUsers component
     const handleSearch = async (e) => {
         e.preventDefault();
-        
+
         try {
             console.log('Search query:', searchQuery);
             const response = await axiosPublic.get(`/find-user?searchQuery=${searchQuery}`);
@@ -49,7 +49,7 @@ const ManageUsers = () => {
             console.error("Error searching users:", error);
         }
     };
-    
+
 
 
 
@@ -64,16 +64,23 @@ const ManageUsers = () => {
                         <span className="">Manage </span>
                         <span className="text-[#B3845A]">Users</span>
                     </h1>
-                    <form onSubmit={handleSearch}>
+
+                    <form onSubmit={handleSearch} className='w-full flex justify-center mb-7'>
                         <input
                             type="text"
-                            placeholder="Search by email or username"
+                            className="bg-white dark:bg-zinc-800 text-black dark:text-white peer block min-h-[auto] w-[80vw] lg:w-[50vw] md:px-12 px-7 md:py-4 py-2 rounded-l border dark:border-zinc-700 border-stone-200 leading-[1.6] lg:drop-shadow-2xl outline-none transition-all duration-300 ease-linear focus:placeholder:opacity-100 data-[te-input-state-active]:placeholder:opacity-100 motion-reduce:transition-none dark:placeholder:text-neutral-200 [&:not([data-te-input-placeholder-active])]:placeholder:opacity-0"
+                            id="exampleFormControlInput1"
+                            placeholder="Search User Here..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                         />
-                        <button type="submit">Search</button>
+                        <label
+                            htmlFor="exampleFormControlInput1"
+                            className="text-lg px-3 md:text-xl pointer-events-none absolute left-3 bottom-[6px] md:bottom-4 mb-[2px] max-w-[90%] origin-[0_0] truncate pt-[0.37rem] leading-[1.6] text-neutral-400 transition-all duration-200 ease-out peer-focus:-translate-y-[0.9rem] peer-focus:scale-[0.8] peer-focus:text-primary peer-data-[te-input-state-active]:-translate-y-[0.9rem] peer-data-[te-input-state-active]:scale-[0.8] motion-reduce:transition-none dark:text-neutral-200 dark:peer-focus:text-primary"
+                        >Type Here...
+                        </label>
+                        <button type="submit"  className="relative rounded-r bg-[#B3845A] hover:bg-[#ebb587] font-primary font-semibold text-[19px] text-white md:px-12 px-7 md:py-4 py-2">Search</button>
                     </form>
-
                     <body className="flex items-center justify-center">
                         <div className="container duration-300">
                             <div className="w-full bg-white rounded-2xl overflow-hidden sm:shadow-lg my-5 duration-300">

@@ -108,11 +108,13 @@ const MealsByCategory = ({ allMeals }) => {
             {/* Conditionally render the "Show All" or "Show Less" button based on the number of meals in the current tab */}
             {mealsInCurrentTab.length > 4 && (
                 <div className="flex justify-center mt-4">
-                    <button
-                        onClick={toggleShowAllMeals}
-                        className="bg-[#B3845A] hover:bg-[#ebb587] font-primary font-semibold text- text-white md:px-12 px-7 md:py-4 py-2 rounded">
-                        {showAllMeals ? "Show Less" : "Show All"}
-                    </button>
+                    <Link to={`/meals`}>
+                        <button
+                            // onClick={toggleShowAllMeals}
+                            className="bg-[#B3845A] hover:bg-[#ebb587] font-primary font-semibold text- text-white md:px-12 px-7 md:py-4 py-2 rounded">
+                            {showAllMeals ? "Show Less" : "See All"}
+                        </button>
+                    </Link>
                 </div>
             )}
         </div>
