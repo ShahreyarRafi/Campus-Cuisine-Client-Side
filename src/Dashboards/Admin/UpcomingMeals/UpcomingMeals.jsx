@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery } from 'react-query';
 import useAxiosPublic from '../../../Hook/useAxiosPublic/useAxiosPublic';
+import Swal from 'sweetalert2';
 
 let tabs = [
     { id: 'All', label: 'All Meals' },
@@ -110,6 +111,11 @@ const UpcomingMeals = () => {
                 // Example: queryClient.invalidateQueries('meals');
                 const updatedMeals = await axiosPublic.get(`/meals`);
                 setFilteredMeals(updatedMeals.data);
+                Swal.fire({
+                    title: 'Published!',
+                    text: 'Meal has been published.',
+                    icon: 'success'
+                });
             } else {
                 // Display a message to the user that the meal needs at least 10 likes
                 alert('This meal needs at least 10 likes to be published.');

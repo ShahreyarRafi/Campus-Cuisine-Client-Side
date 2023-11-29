@@ -27,8 +27,7 @@ const Meals = ({ allMeals }) => {
         const loadMoreMeals = () => {
             // Check if the user has scrolled to the bottom
             if (
-                window.innerHeight + document.documentElement.scrollTop ===
-                document.documentElement.offsetHeight
+                window.innerHeight + window.scrollY >= document.documentElement.offsetHeight - 20
             ) {
                 // Increment the page number and fetch more meals
                 setPageNumber((prevPageNumber) => prevPageNumber + 1);
