@@ -32,9 +32,10 @@ const CheckoutForm = ({ totalPrice, selectedPlan }) => {
         }
     })
 
- 
 
-    const currentUser = usersData.find((userData) => userData.email === user.email);
+
+    const currentUser = usersData.find((userData) => userData?.email.toLowerCase() === user?.email.toLowerCase());
+
 
 
 
@@ -49,12 +50,12 @@ const CheckoutForm = ({ totalPrice, selectedPlan }) => {
     }, [axiosSecure, totalPrice])
 
 
-    
-  const handlePaymentSuccess = async () => {
-    await axiosSecure.put(`/update-user-badge/${user.email}`, {
-      badge: selectedPlan,
-    });
-  };
+
+    const handlePaymentSuccess = async () => {
+        await axiosSecure.put(`/update-user-badge/${currentUser._id}`, {
+            badge: selectedPlan,
+        });
+    };
 
 
 
@@ -133,9 +134,13 @@ const CheckoutForm = ({ totalPrice, selectedPlan }) => {
                             },
                         }}
                     />
-                    <button className="btn btn-primary my-4 px-8 py-3 mt-8 text-[18px] text-center">
+                    <button
+                        className="btn btn-primary my-4 px-8 py-3 mt-8 text-[18px] text-center"
+                        disabled={!currentUser?._id}
+                    >
                         Pay
                     </button>
+
                     <p className='text-red-600'>{error}</p>
                     {transactionId && <p className="text-green-600"> Your transaction id: {transactionId}</p>}
 

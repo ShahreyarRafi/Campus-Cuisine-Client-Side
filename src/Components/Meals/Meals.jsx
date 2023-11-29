@@ -18,6 +18,9 @@ const Meals = ({ allMeals }) => {
     const [filteredMeals, setFilteredMeals] = useState([]);
     const [activeTab, setActiveTab] = useState('All');
     const [pageNumber, setPageNumber] = useState(1);
+    const [minPrice, setMinPrice] = useState('');
+    const [maxPrice, setMaxPrice] = useState('');
+
 
     useEffect(() => {
         // Function to load more meals when scrolling down
@@ -41,12 +44,34 @@ const Meals = ({ allMeals }) => {
         };
     }, []);
 
+    // useEffect(() => {
+    //     // Filter meals based on the selected category and exclude "Upcoming" meals
+    //     const filtered = allMeals.filter(
+    //         (meal) =>
+    //             (activeTab === 'All' || meal?.category?.toLowerCase() === activeTab?.toLowerCase()) &&
+    //             meal?.meal_status?.toLowerCase() === 'ready'
+    //     );
+
+    //     // Filter meals based on the search input
+    //     const searchFiltered = filtered.filter((meal) =>
+    //         meal?.title?.toLowerCase().includes(searchValue.toLowerCase())
+    //     );
+
+    //     // Slice the array to get only the meals for the current page
+    //     const slicedMeals = searchFiltered.slice(0, pageNumber * 10);
+
+    //     setFilteredMeals(slicedMeals);
+    // }, [allMeals, activeTab, searchValue, pageNumber]);
+
+
     useEffect(() => {
-        // Filter meals based on the selected category and exclude "Upcoming" meals
+        // Filter meals based on the selected category, price range, and exclude "Upcoming" meals
         const filtered = allMeals.filter(
             (meal) =>
                 (activeTab === 'All' || meal?.category?.toLowerCase() === activeTab?.toLowerCase()) &&
-                meal?.meal_status?.toLowerCase() === 'ready'
+                meal?.meal_status?.toLowerCase() === 'ready' &&
+                (minPrice === '' || meal.price >= parseFloat(minPrice)) &&
+                (maxPrice === '' || meal.price <= parseFloat(maxPrice))
         );
 
         // Filter meals based on the search input
@@ -58,7 +83,7 @@ const Meals = ({ allMeals }) => {
         const slicedMeals = searchFiltered.slice(0, pageNumber * 10);
 
         setFilteredMeals(slicedMeals);
-    }, [allMeals, activeTab, searchValue, pageNumber]);
+    }, [allMeals, activeTab, searchValue, pageNumber, minPrice, maxPrice]);
 
 
 
@@ -100,7 +125,28 @@ const Meals = ({ allMeals }) => {
                             ))}
                         </select>
                     </div>
-
+                </div>
+                <div className="flex items-center justify-center mt-5 mb-3">
+                    <div className="mr-4">
+                        <label className="text-lg font-bold text-slate-700">Min Price:</label>
+                        <input
+                            type="number"
+                            placeholder="Min Price"
+                            value={minPrice}
+                            onChange={(e) => setMinPrice(e.target.value)}
+                            className="border rounded px-2 py-1"
+                        />
+                    </div>
+                    <div>
+                        <label className="text-lg font-bold text-slate-700">Max Price:</label>
+                        <input
+                            type="number"
+                            placeholder="Max Price"
+                            value={maxPrice}
+                            onChange={(e) => setMaxPrice(e.target.value)}
+                            className="border rounded px-2 py-1"
+                        />
+                    </div>
                 </div>
                 <div className="font-primary max-w-[1500px] w-full py-10 px-10 mx-auto duration-300">
                     <body className="flex items-center justify-center">

@@ -5,6 +5,10 @@ import { AuthContext } from '../../services/Firebase/AuthProvider';
 import { FaHeart } from "react-icons/fa";
 import Swal from 'sweetalert2';
 import { v4 as uuidv4 } from 'uuid';
+import useAxiosPublic from '../../Hook/useAxiosPublic/useAxiosPublic';
+import { useQuery } from 'react-query';
+
+
 
 
 
@@ -93,6 +97,24 @@ const handleMealReq = (
 
 const Details = ({ meal }) => {
     const { user } = useContext(AuthContext);
+    const axiosPublic = useAxiosPublic();
+    const [usersData, setUsersData] = useState([]);
+
+
+    const { data: users = [], isLoading } = useQuery({
+        queryKey: ['users'],
+        queryFn: async () => {
+            // const res = await axiosSecure.get(`/users/${user?.email}`);
+            const res = await axiosPublic.get(`/users`);
+            return setUsersData(res.data);
+        }
+    })
+
+
+    const currentUser = usersData.find((userData) => userData?.email.toLowerCase() === user?.email.toLowerCase());
+    
+    const holdsPackages = ["Silver", "Gold", "Platinum"].includes(currentUser?.badge);
+
 
     const {
         _id,
@@ -239,8 +261,8 @@ const Details = ({ meal }) => {
                         <div className='flex items-center gap-7'>
                             <button
                                 onClick={(event) => handleMealReq(event, user.uid, user.email, user.displayName, _id, image, title, description, ingredients, category, price, post_time, meal_status, ratings, review_count, liked_count, admin_name, admin_email)}
-                                className={`bg-[#B3845A] hover:bg-[#ebb587] font-primary font-semibold text-xl text-white md:px-12 px-7 md:py-4 py-2 rounded ${meal_status === 'Upcoming' ? 'cursor-not-allowed opacity-50' : ''}`}
-                                disabled={meal_status === 'Upcoming'}
+                                className={`bg-[#B3845A] hover:bg-[#ebb587] font-primary font-semibold text-xl text-white md:px-12 px-7 md:py-4 py-2 rounded ${meal_status === 'Upcoming' || !holdsPackages ? 'cursor-not-allowed opacity-50' : ''}`}
+                                disabled={meal_status === 'Upcoming' || !holdsPackages}
                             >
                                 Request This Meal
                             </button>
@@ -251,6 +273,9 @@ const Details = ({ meal }) => {
                                 <FaHeart />
                             </button>
                         </div>
+                        {!holdsPackages && (
+                            <p className='mt-3 text-lg font-bold text-red-500'>Buy a package to request meal</p>
+                        )}
                     </div>
                 </div>
             </div>

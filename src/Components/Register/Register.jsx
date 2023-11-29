@@ -106,7 +106,7 @@ const Register = () => {
                                                 <div className="relative mb-4" data-te-input-wrapper-init>
                                                     <input
                                                         {...register("email", { required: true })}
-                                                        onChange={(event) => setEmail(event.target.value)}
+                                                        onChange={(event) => setEmail(event.target.value.toLowerCase())}
                                                         type="email"
                                                         className="bg-slate-200 dark:bg-zinc-800  text-black dark:text-white peer block min-h-[auto] w-full rounded border dark:border-zinc-700 border-stone-200 bg-transparent px-3 py-[0.32rem] leading-[1.6] outline-none transition-all duration-200 ease-linear focus:placeholder:opacity-100 data-[te-input-state-active]:placeholder:opacity-100 motion-reduce:transition-none dark:placeholder:text-neutral-200 [&:not([data-te-input-placeholder-active])]:placeholder:opacity-0"
                                                         id="exampleFormControlInput1"

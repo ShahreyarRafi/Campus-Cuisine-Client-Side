@@ -3,8 +3,6 @@ import logoWhite from '/CampusCuisine.png'
 import logoBlack from '/CampusCuisineBlack.png'
 import { Link, NavLink } from 'react-router-dom';
 import userPicPlaceholder from '../../../assets/images/userPicPlaceHolder.png';
-import cartIcon from '../../../assets/images/cartRoundedWhite.png';
-import cartIconDark from '../../../assets/images/cartRoundedBlack.png';
 import profile from '../../../assets/images/userIconWhite.png';
 import profileDark from '../../../assets/images/userIconBlack.png';
 import { AuthContext } from "../../../services/Firebase/AuthProvider";
@@ -175,18 +173,6 @@ const Navbar = () => {
 
 
                                 <li className='flex items-center gap-3 lg:gap-6'>
-                                    {user && (
-                                        <a className=" ml-3 xl:ml-0">
-                                            <Link to="/cart">
-                                                <img
-                                                    className='w-10 dark:block hidden'
-                                                    src={cartIcon} alt="" />
-                                                <img
-                                                    className='w-10 dark:hidden block'
-                                                    src={cartIconDark} alt="" />
-                                            </Link>
-                                        </a>
-                                    )}
                                     <div className=" flex rounded-full text-black dark:text-white duration-300">
                                         <DarkModeSwitch
                                             checked={theme}
