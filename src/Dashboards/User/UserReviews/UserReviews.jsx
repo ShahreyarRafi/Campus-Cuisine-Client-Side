@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import useAxiosPublic from '../../../Hook/useAxiosPublic/useAxiosPublic';
 import { AuthContext } from '../../../services/Firebase/AuthProvider';
+import { Link } from 'react-router-dom';
 
 const UserReviews = () => {
     const { user } = useContext(AuthContext);
@@ -136,7 +137,8 @@ const UserReviews = () => {
                                         <h5 className="w-full mr-10">Ratings</h5>
                                         <h5 className="w-[120%] mr-10">Comment</h5>
                                         <h5 className="max-w-[80px] w-full mr-10">Edit</h5>
-                                        <h5 className="max-w-[80px] w-full ">Delete</h5>
+                                        <h5 className="max-w-[80px] w-full mr-10">Delete</h5>
+                                        <h5 className="max-w-[80px] w-full ">View Meal</h5>
                                     </div>
                                 </div>
                                 <div className="flex-1 sm:flex-none">
@@ -149,17 +151,22 @@ const UserReviews = () => {
                                                 <h5 className="w-full mr-10">{review.ratings}</h5>
                                                 <h5 className="w-[120%] mr-10 truncate">{review.reviewText}</h5>
                                                 <button
-                                                    className='max-w-[80px] w-full mr-10 text-start font-bold text-[#1965a4be] hover:text-red-400 duration-300'
+                                                    className='max-w-[80px] w-full mr-10 font-bold text-[#1965a4be] hover:text-red-400 duration-300'
                                                     onClick={() => handleEditReview(review)}
                                                 >
                                                     Edit
                                                 </button>
                                                 <button
-                                                    className='max-w-[80px] w-full  text-start font-bold text-red-600 hover:text-red-400 duration-300'
+                                                    className='max-w-[80px] w-full mr-10 font-bold text-red-600 hover:text-red-400 duration-300'
                                                     onClick={() => handleDeleteReview(review.meal_id, review.review_id)}
                                                 >
                                                     Delete
                                                 </button>
+                                                <Link to={`/meals/${review.meal_id}`}
+                                                    className='max-w-[80px] w-full font-bold text-[#1965a4be] hover:text-sky-400 duration-300'
+                                                >
+                                                    View Meal
+                                                </Link>
                                             </div>
 
                                             {/* Open the modal using document.getElementById('ID').showModal() method */}
