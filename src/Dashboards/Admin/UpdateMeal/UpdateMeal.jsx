@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import useAxiosPublic from '../../../Hook/useAxiosPublic/useAxiosPublic';
+import Swal from 'sweetalert2';
 
 const UpdateMeal = () => {
     const { id } = useParams();
@@ -65,11 +66,19 @@ const UpdateMeal = () => {
             const response = await axiosPublic.put(`/meals/${id}`, updatedMeal);
 
             if (response.data.updated) {
-                // Handle success, e.g., show a success message
-                console.log('Meal updated successfully');
+                Swal.fire({
+                    title: 'Success!',
+                    text: 'Updated Meal Successfully',
+                    icon: 'success',
+                    confirmButtonText: 'OK',
+                });
             } else {
-                // Handle failure, e.g., show an error message
-                console.log('Failed to update meal');
+                Swal.fire({
+                    title: 'Oops...',
+                    text: 'There was an error',
+                    icon: 'Error',
+                    confirmButtonText: 'OK',
+                });
             }
         } catch (error) {
             console.error('Error updating meal:', error);

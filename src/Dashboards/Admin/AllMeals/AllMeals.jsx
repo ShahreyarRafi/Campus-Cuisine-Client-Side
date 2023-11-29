@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import useAxiosPublic from '../../../Hook/useAxiosPublic/useAxiosPublic';
 import { useQuery } from 'react-query';
+import Swal from 'sweetalert2';
 
 const itemsPerPage = 10;
 
@@ -52,6 +53,40 @@ const AllMeals = () => {
     };
 
     const pages = Array.from({ length: Math.ceil(mealsCount / itemsPerPage) }, (_, index) => index);
+
+
+    const handleDelete = async (mealId) => {
+        try {
+            const result = await Swal.fire({
+                title: 'Are you sure?',
+                text: 'You won\'t be able to revert this!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            });
+    
+            if (result.isConfirmed) {
+                // Send a request to delete the meal with the given ID
+                await axiosPublic.delete(`/meals/${mealId}`);
+    
+                // Update the filtered meals by removing the deleted meal
+                setFilteredMeals((prevMeals) => prevMeals.filter((meal) => meal._id !== mealId));
+    
+                Swal.fire({
+                    title: 'Deleted!',
+                    text: 'Meal has been deleted.',
+                    icon: 'success'
+                });
+            }
+        } catch (error) {
+            console.error('Error deleting meal:', error);
+            // Handle error (e.g., show an error message to the user)
+        }
+    };
+    
+
 
     return (
         <div>
@@ -144,9 +179,8 @@ const AllMeals = () => {
                                             {pages.map((page) => (
                                                 <button
                                                     key={page}
-                                                    className={`pb-1 m-1 border-2 rounded-full w-10 h-10 text-[18px] ${
-                                                        page + 1 === currentPage ? 'bg-slate-400 text-white' : 'bg-white text-slate-400'
-                                                    }`}
+                                                    className={`pb-1 m-1 border-2 rounded-full w-10 h-10 text-[18px] ${page + 1 === currentPage ? 'bg-slate-400 text-white' : 'bg-white text-slate-400'
+                                                        }`}
                                                     onClick={() => handlePageChange(page + 1)}
                                                 >
                                                     {page + 1}

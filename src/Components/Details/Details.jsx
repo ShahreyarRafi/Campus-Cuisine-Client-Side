@@ -7,98 +7,23 @@ import Swal from 'sweetalert2';
 import { v4 as uuidv4 } from 'uuid';
 import useAxiosPublic from '../../Hook/useAxiosPublic/useAxiosPublic';
 import { useQuery } from 'react-query';
+import useAxiosSecure from '../../Hook/useAxiosSecure';
+import { useNavigate } from 'react-router-dom';
+import useAuth from '../../Hook/useAuth';
 
 
 
 
-
-const handleMealReq = (
-    event,
-    user_id,
-    user_email,
-    user_name,
-    meal_id,
-    image,
-    title,
-    description,
-    ingredients,
-    category,
-    price,
-    post_time,
-    meal_status,
-    ratings,
-    review_count,
-    liked_count,
-    admin_name,
-    admin_email
-) => {
-
-    event.preventDefault();
-
-    if (meal_status === 'Upcoming') {
-        return;
-    }
-
-    const reqMealData = {
-        user_id,
-        user_email,
-        user_name,
-        meal_id,
-        image,
-        title,
-        description,
-        ingredients,
-        category,
-        price,
-        post_time,
-        meal_status,
-        ratings,
-        review_count,
-        liked_count,
-        delivery_status: 'Pending',
-        admin_name,
-        admin_email
-    };
-
-    console.log(reqMealData);
-
-    // Send data to the server
-    fetch('http://localhost:5000/api/request-meal', {
-        method: 'POST',
-        headers: {
-            'content-type': 'application/json'
-        },
-        body: JSON.stringify(reqMealData)
-    })
-        .then(res => res.json())
-        .then(data => {
-            if (data.insertedId) {
-                Swal.fire({
-                    title: 'Meal Requested!',
-                    text: `You Requested for ${title}`,
-                    icon: 'success',
-                    confirmButtonText: 'OK'
-                });
-            }
-        })
-        .catch(error => {
-            console.error("Error submitting application:", error);
-            Swal.fire({
-                title: 'Application Error',
-                text: 'Failed to submit your application',
-                icon: 'error',
-                confirmButtonText: 'OK'
-            });
-        });
-
-};
 
 
 
 const Details = ({ meal }) => {
     const { user } = useContext(AuthContext);
     const axiosPublic = useAxiosPublic();
+    const axiosSecure = useAxiosSecure();
     const [usersData, setUsersData] = useState([]);
+    const navigate = useNavigate();
+    const { logout } = useAuth();
 
 
 
@@ -114,8 +39,101 @@ const Details = ({ meal }) => {
 
 
     const currentUser = usersData.find((userData) => userData?.email.toLowerCase() === user?.email.toLowerCase());
-    
+
     const holdsPackages = ["Silver", "Gold", "Platinum"].includes(currentUser?.badge);
+
+    const handleMealReq = (
+        event,
+        user_id,
+        user_email,
+        user_name,
+        meal_id,
+        image,
+        title,
+        description,
+        ingredients,
+        category,
+        price,
+        post_time,
+        meal_status,
+        ratings,
+        review_count,
+        liked_count,
+        admin_name,
+        admin_email
+    ) => {
+
+        event.preventDefault();
+
+        if (!currentUser) {
+            Swal.fire({
+                icon: "error",
+                title: "Please Login",
+                text: "Login to request a meal",
+            });
+            navigate('/login');
+            return
+        }
+
+        if (meal_status === 'Upcoming') {
+            return;
+        }
+
+        const reqMealData = {
+            user_id,
+            user_email,
+            user_name,
+            meal_id,
+            image,
+            title,
+            description,
+            ingredients,
+            category,
+            price,
+            post_time,
+            meal_status,
+            ratings,
+            review_count,
+            liked_count,
+            delivery_status: 'Pending',
+            admin_name,
+            admin_email
+        };
+
+        console.log(reqMealData);
+
+        // Send data to the server
+        fetch('http://localhost:5000/api/request-meal', {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json'
+            },
+            body: JSON.stringify(reqMealData)
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.insertedId) {
+                    Swal.fire({
+                        title: 'Meal Requested!',
+                        text: `You Requested for ${title}`,
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            })
+            .catch(error => {
+                console.error("Error submitting application:", error);
+                Swal.fire({
+                    title: 'Application Error',
+                    text: 'Failed to submit your application',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            });
+
+    };
+
+
 
 
     const {
@@ -135,7 +153,7 @@ const Details = ({ meal }) => {
         admin_name,
         admin_email
     } = meal || {};
-    
+
 
 
     const [isLiked, setIsLiked] = useState(false);
@@ -144,6 +162,16 @@ const Details = ({ meal }) => {
 
     const handleReviewSubmit = (event) => {
         event.preventDefault();
+
+        if (!currentUser) {
+            Swal.fire({
+                icon: "error",
+                title: "Please Login",
+                text: "Login to add a review",
+            });
+            navigate('/login');
+            return
+        }
 
         // You may want to add validation for the form fields here
         const newReview = {
@@ -203,26 +231,32 @@ const Details = ({ meal }) => {
 
 
 
+
     const handleLikeClick = () => {
+
+        if (!currentUser) {
+            Swal.fire({
+                icon: "error",
+                title: "Please Login",
+                text: "Login to like a meal",
+            });
+            navigate('/login');
+            return
+        }
+
         // For simplicity, updating the state locally. 
         setIsLiked(true);
 
         // You may want to send a request to the server to update the like count.
-        fetch(`http://localhost:5000/api/like-meal/${_id}`, {
-            method: 'PUT',
-            headers: {
-                'content-type': 'application/json'
-            },
-            body: JSON.stringify({
-                liked_count: liked_count + 1
-            })
+
+        axiosSecure.put(`/api/like-meal/${_id}`, {
+            liked_count: liked_count + 1,
         })
-            .then(res => res.json())
-            .then(data => {
+            .then(response => {
                 // Handle the response from the server if needed
             })
             .catch(error => {
-                console.error("Error updating like count:", error);
+                console.error('Error updating like count:', error);
                 // Handle error
             });
     };
@@ -263,9 +297,9 @@ const Details = ({ meal }) => {
                         <p className='text-lg mb-4'><span className='font-bold mb-1 text-slate-700'>Reviews: </span> {meal.review_count}</p>
                         <div className='flex items-center gap-7'>
                             <button
-                                onClick={(event) => handleMealReq(event, user.uid, user.email, user.displayName, _id, image, title, description, ingredients, category, price, post_time, meal_status, ratings, review_count, liked_count, admin_name, admin_email)}
-                                className={`bg-[#B3845A] hover:bg-[#ebb587] font-primary font-semibold text-xl text-white md:px-12 px-7 md:py-4 py-2 rounded ${meal_status === 'Upcoming' || !holdsPackages ? 'cursor-not-allowed opacity-50' : ''}`}
-                                disabled={meal_status === 'Upcoming' || !holdsPackages}
+                                onClick={(event) => handleMealReq(event, user?.uid, user?.email, user?.displayName, _id, image, title, description, ingredients, category, price, post_time, meal_status, ratings, review_count, liked_count, admin_name, admin_email)}
+                                className={`bg-[#B3845A] hover:bg-[#ebb587] font-primary font-semibold text-xl text-white md:px-12 px-7 md:py-4 py-2 rounded ${meal_status === 'Upcoming' || currentUser && !holdsPackages ? 'cursor-not-allowed opacity-50' : ''}`}
+                                disabled={meal_status === 'Upcoming' || currentUser && !holdsPackages}
                             >
                                 Request This Meal
                             </button>

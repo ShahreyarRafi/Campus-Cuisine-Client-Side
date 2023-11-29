@@ -4,6 +4,7 @@ import useAxiosSecure from '../../../Hook/useAxiosSecure'
 import useAuth from '../../../Hook/useAuth';
 import { useQuery } from 'react-query';
 import useAxiosPublic from '../../../Hook/useAxiosPublic/useAxiosPublic';
+import Swal from 'sweetalert2';
 
 
 // myyyyyyyyy;
@@ -55,6 +56,13 @@ const CheckoutForm = ({ totalPrice, selectedPlan }) => {
         await axiosSecure.put(`/update-user-badge/${currentUser._id}`, {
             badge: selectedPlan,
         });
+        Swal.fire({
+            position: "top-end",
+            icon: "success",
+            title: "Payment Successful",
+            showConfirmButton: false,
+            timer: 2000
+          });
     };
 
 

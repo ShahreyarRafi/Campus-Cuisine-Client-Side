@@ -14,6 +14,19 @@ const AdminProfile = () => {
 
     const { user } = useContext(AuthContext);
 
+    console.log(user);
+
+    const axiosPublic = useAxiosPublic();
+
+    const { data: allMeals = [], isLoading } = useQuery({
+        queryKey: ['meals'],
+        queryFn: async () => {
+            const res = await axiosPublic.get(`/meals`);
+            return res.data;
+        },
+    });
+
+
     // const {data} = useQuery({
     //     queryKey: ['users'],
     //     queryFn: async () => {
@@ -23,7 +36,7 @@ const AdminProfile = () => {
     // })
     // console.log(data);
 
-    const axiosPublic = useAxiosPublic();
+
     const { data: users = [] } = useQuery({
         queryKey: ['users'],
         queryFn: async () => {
@@ -33,7 +46,12 @@ const AdminProfile = () => {
         }
     })
 
-    const currentUser = users.find(userData => userData.email === user.email);
+
+    const currentUser = users.find(userData => userData.email === user?.email);
+
+
+    const addedByAdmin = allMeals.map(meal => meal?.admin_email === currentUser?.email);
+
 
     let badgeImage;
     switch (currentUser?.badge) {
@@ -50,8 +68,7 @@ const AdminProfile = () => {
             badgeImage = platinum;
             break;
         default:
-            badgeImage = null; // Handle other cases if needed
-            break;
+            badgeImage = null; 
     }
 
 
@@ -81,6 +98,10 @@ const AdminProfile = () => {
                     <div className="divider"></div>
                     <div>
                         <p className="text-black text-lg text-center"><span className="font-bold">Admin Email: </span> {user?.email}</p>
+                    </div>
+                    <div className="divider"></div>
+                    <div>
+                        <p className="text-black text-lg text-center"><span className="font-bold">Total Meals Added: </span> {addedByAdmin?.length}</p>
                     </div>
                     <div className="divider"></div>
                     <div className=" flex justify-center items-center gap-1">

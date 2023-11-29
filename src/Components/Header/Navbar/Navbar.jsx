@@ -7,6 +7,7 @@ import profile from '../../../assets/images/userIconWhite.png';
 import profileDark from '../../../assets/images/userIconBlack.png';
 import { AuthContext } from "../../../services/Firebase/AuthProvider";
 import { DarkModeSwitch } from 'react-toggle-dark-mode';
+import useAdmin from '../../../Hook/useAdmin';
 
 
 
@@ -14,9 +15,11 @@ import { DarkModeSwitch } from 'react-toggle-dark-mode';
 const Navbar = () => {
     const [navbarOpen, setNavbarOpen] = useState(false);
     const [dropDownOpen, setDropDownOpen] = useState(false);
-
-
     const { user, logout } = useContext(AuthContext);
+
+    const [isAdmin] = useAdmin()
+
+    console.log(isAdmin);
 
     const handleLogout = () => {
         logout();
