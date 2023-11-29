@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import useAxiosPublic from '../../../Hook/useAxiosPublic/useAxiosPublic';
+import useAxiosSecure from '../../../Hook/useAxiosSecure';
 import { useQuery } from 'react-query';
 
 const itemsPerPage = 10;
@@ -8,12 +8,12 @@ const ManageUsers = () => {
     const [usersData, setUsersData] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
 
-    const axiosPublic = useAxiosPublic();
+    const axiosSecure = useAxiosSecure();
 
     const { data: users = [], isLoading } = useQuery({
         queryKey: ['users'],
         queryFn: async () => {
-            const res = await axiosPublic.get(`/users`);
+            const res = await axiosSecure.get(`/users`);
             return res.data;
         }
     });
@@ -29,11 +29,11 @@ const ManageUsers = () => {
         console.log(userId);
 
         try {
-            await axiosPublic.patch(`/users/${userId}`, {
+            await axiosSecure.patch(`/users/${userId}`, {
                 role: 'Admin',
             });
 
-            const updatedUsers = await axiosPublic.get(`/users`);
+            const updatedUsers = await axiosSecure.get(`/users`);
             setUsersData(updatedUsers.data);
         } catch (error) {
             console.error("Error updating user role:", error);
@@ -47,7 +47,7 @@ const ManageUsers = () => {
 
         try {
             console.log('Search query:', searchQuery);
-            const response = await axiosPublic.get(`/find-user?searchQuery=${searchQuery}`);
+            const response = await axiosSecure.get(`/find-user?searchQuery=${searchQuery}`);
             const searchedUsers = response.data;
             setUsersData(searchedUsers);
         } catch (error) {
