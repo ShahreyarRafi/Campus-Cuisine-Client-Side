@@ -3,15 +3,16 @@ import useAxiosPublic from '../../../Hook/useAxiosPublic/useAxiosPublic';
 import { AuthContext } from '../../../services/Firebase/AuthProvider';
 import { Link } from 'react-router-dom';
 
+const itemsPerPage = 10;
+
 const UserReviews = () => {
     const { user } = useContext(AuthContext);
 
     const [logs, setLogs] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [currentPage, setCurrentPage] = useState(1);
+
     const [currentReview, setCurrentReview] = useState(null);
-
-    console.log(currentReview);
-
 
     useEffect(() => {
         const fetchData = async () => {
@@ -51,8 +52,10 @@ const UserReviews = () => {
         log.reviews.filter((review) => review.reviewerEmail === user?.email)
     );
 
-    console.log(userReviews);
-
+    // Paginate userReviews
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const paginatedUserReviews = userReviews.slice(startIndex, endIndex);
 
     // Delete a review
     const handleDeleteReview = async (mealId, reviewId) => {
@@ -112,7 +115,11 @@ const UserReviews = () => {
         }
     };
 
+    const handlePageChange = (page) => {
+        setCurrentPage(page);
+    };
 
+    const pages = Array.from({ length: Math.ceil(userReviews.length / itemsPerPage) }, (_, index) => index + 1);
 
     return (
         <div className='font-primary bg-[#1965a423] px-5'>
@@ -126,7 +133,7 @@ const UserReviews = () => {
                         <span className="">Your </span>
                         <span className="text-[#B3845A]">Reviews</span>
                     </h1>
-                    < body className="flex items-center justify-center">
+                    <body className="flex items-center justify-center">
                         <div className="container duration-300">
                             <div className="w-full bg-white rounded-2xl overflow-hidden sm:shadow-lg my-5 duration-300">
                                 <div className="hidden xl:block bg-[#1965a44b] duration-300">
@@ -142,10 +149,10 @@ const UserReviews = () => {
                                     </div>
                                 </div>
                                 <div className="flex-1 sm:flex-none">
-                                    {userReviews.map((review, index) => (
+                                    {paginatedUserReviews.map((review, index) => (
                                         <div key={index}>
                                             <div className="flex flex-col xl:flex-row items-start xl:items-center justify-start xl:justify-between border border-gray-100 hover:bg-[#193ea417] px-10 py-5 duration-300">
-                                                <h5 className="w-[160%] mr-10 text-lg font-semibold line-clamp-1 truncate" >{review.mealTitle}</h5>
+                                                <h5 className="w-[160%] mr-10 text-lg font-semibold line-clamp-1 truncate">{review.mealTitle}</h5>
                                                 <h5 className="w-full mr-10">{review.liked_count}</h5>
                                                 <h5 className="w-full mr-10">{review.review_count}</h5>
                                                 <h5 className="w-full mr-10">{review.ratings}</h5>
@@ -230,16 +237,26 @@ const UserReviews = () => {
                                                 </div>
                                             </dialog>
                                         </div>
-
                                     ))}
                                 </div>
+                            </div>
+                            <div className="flex justify-center mt-4">
+                                {pages.map((page) => (
+                                    <button
+                                        key={page}
+                                        className={`pb-1 m-1 border-2 rounded-full w-10 h-10 text-[18px] ${page === currentPage ? 'bg-slate-400 text-white' : 'bg-white text-slate-400'
+                                            }`}
+                                        onClick={() => handlePageChange(page)}
+                                    >
+                                        {page}
+                                    </button>
+                                ))}
                             </div>
                         </div>
                     </body>
                 </div>
-            )
-            }
-        </div >
+            )}
+        </div>
     );
 };
 

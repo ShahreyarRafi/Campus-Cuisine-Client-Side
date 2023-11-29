@@ -5,23 +5,13 @@ import { useContext, useState } from "react";
 import Swal from "sweetalert2";
 import { AuthContext } from "../../../services/Firebase/AuthProvider";
 
+const itemsPerPage = 10;
 
 const UserRequestedMeals = () => {
-
     const { user } = useContext(AuthContext);
     const [reqMealsData, setReqMealsData] = useState(null);
     const axiosPublic = useAxiosPublic();
-
-    // const { data: reqMeals = [] } = useQuery({
-    //     queryKey: ['reqMeals'],
-    //     queryFn: async () => {
-    //         // const res = await axiosSecure.get(`/users/${user?.email}`);
-    //         const res = await axiosSecure.get(`/api/request-meal`);
-    //         return setReqMealsData(res.data);
-    //     }
-    // })
-
-
+    const [currentPage, setCurrentPage] = useState(1);
 
     const { data: reqMeals = [] } = useQuery({
         queryKey: ['reqMeals'],
@@ -34,11 +24,11 @@ const UserRequestedMeals = () => {
         enabled: Boolean(user?.email),
     });
 
-
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const paginatedReqMeals = reqMealsData?.slice(startIndex, endIndex);
 
     const handleDelivery = async (mealId) => {
-        console.log(mealId);
-
         try {
             await axiosPublic.patch(`/meal/${mealId}`, {
                 delivery_status: "Delivered"
@@ -46,18 +36,13 @@ const UserRequestedMeals = () => {
 
             const remaining = await axiosPublic.get(`/api/request-meal`);
             setReqMealsData(remaining);
-
         } catch (error) {
             console.error("Error updating user role:", error);
-            // Handle error (e.g., show an error message to the user)
         }
     };
 
-
-
     const handleCancel = (e, mealId) => {
         e.preventDefault();
-        console.log(mealId);
         Swal.fire({
             title: 'Are you sure?',
             text: "You won't be able to revert this!",
@@ -73,7 +58,6 @@ const UserRequestedMeals = () => {
                 })
                     .then(res => res.json())
                     .then(data => {
-                        console.log(data);
                         if (data.deletedCount > 0) {
                             Swal.fire(
                                 'Deleted!',
@@ -91,8 +75,11 @@ const UserRequestedMeals = () => {
         });
     };
 
+    const handlePageChange = (page) => {
+        setCurrentPage(page);
+    };
 
-
+    const pages = Array.from({ length: Math.ceil((reqMealsData?.length || 0) / itemsPerPage) }, (_, index) => index + 1);
 
     return (
         <div>
@@ -115,7 +102,7 @@ const UserRequestedMeals = () => {
                                     </div>
                                 </div>
                                 <div className="flex-1 sm:flex-none">
-                                    {reqMealsData?.map((meal) => (
+                                    {paginatedReqMeals?.map((meal) => (
                                         <div key={meal._id} className="flex flex-col xl:flex-row items-start xl:items-center justify-start xl:justify-between border border-gray-100 hover:bg-[#193ea417] px-10 py-5 duration-300">
                                             <h5 className="w-[160%] mr-10 text-lg font-semibold line-clamp-1" data-tooltip-id="all-meal-page-meal-title" data-tooltip-content={meal.meal_title}>{meal.title}</h5>
                                             <h5 className="w-full mr-10">{meal.liked_count}</h5>
@@ -125,6 +112,18 @@ const UserRequestedMeals = () => {
                                         </div>
                                     ))}
                                 </div>
+                            </div>
+                            <div className="flex justify-center mt-4">
+                                {pages.map((page) => (
+                                    <button
+                                        key={page}
+                                        className={`pb-1 m-1 border-2 rounded-full w-10 h-10 text-[18px] ${page === currentPage ? 'bg-slate-400 text-white' : 'bg-white text-slate-400'
+                                            }`}
+                                        onClick={() => handlePageChange(page)}
+                                    >
+                                        {page}
+                                    </button>
+                                ))}
                             </div>
                         </div>
                     </body>
