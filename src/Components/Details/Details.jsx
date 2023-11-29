@@ -101,6 +101,8 @@ const Details = ({ meal }) => {
     const [usersData, setUsersData] = useState([]);
 
 
+
+
     const { data: users = [], isLoading } = useQuery({
         queryKey: ['users'],
         queryFn: async () => {
@@ -133,6 +135,7 @@ const Details = ({ meal }) => {
         admin_name,
         admin_email
     } = meal || {};
+    
 
 
     const [isLiked, setIsLiked] = useState(false);
@@ -287,8 +290,8 @@ const Details = ({ meal }) => {
                     <h3 className="text-2xl font-bold mb-2">Reviews</h3>
                     {reviews && reviews.length > 0 ? (
                         <div>
-                            {reviews.map((review) => (
-                                <div key={review._id} className="mb-4">
+                            {reviews.map((review, index) => (
+                                <div key={index} className="mb-4">
                                     <p className="text-lg mb-1">
                                         <span className="font-bold mb-1 text-slate-700">User:</span> {review.name}
                                     </p>

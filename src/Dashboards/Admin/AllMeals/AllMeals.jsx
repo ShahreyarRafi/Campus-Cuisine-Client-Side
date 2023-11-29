@@ -1,81 +1,57 @@
-import { useState, useEffect } from 'react';
-import { BsStar, BsStarFill, BsStarHalf } from 'react-icons/bs';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
-import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
 import useAxiosPublic from '../../../Hook/useAxiosPublic/useAxiosPublic';
 import { useQuery } from 'react-query';
 
-let tabs = [
-    { id: "All", label: "All Meals" },
-    { id: "Breakfast", label: "Breakfast" },
-    { id: "Lunch", label: "Lunch" },
-    { id: "Dinner", label: "Dinner" },
-];
+const itemsPerPage = 10;
 
 const AllMeals = () => {
     const [searchValue, setSearchValue] = useState('');
     const [filteredMeals, setFilteredMeals] = useState([]);
     const [activeTab, setActiveTab] = useState('All');
-    const [pageNumber, setPageNumber] = useState(1);
+    const [mealsCount, setMealsCount] = useState(0);
+    const [currentPage, setCurrentPage] = useState(1);
 
     const axiosPublic = useAxiosPublic();
+
     const { data: allMeals = [], isLoading } = useQuery({
         queryKey: ['meals'],
         queryFn: async () => {
             const res = await axiosPublic.get(`/meals`);
             return res.data;
-        }
+        },
+    });
+
+    const { data = [] } = useQuery({
+        queryKey: ['mealsCount'],
+        queryFn: async () => {
+            const res = await axiosPublic.get(`/mealsCount`);
+            return res?.data;
+        },
+        onSuccess: (data) => {
+            setMealsCount(data.count);
+        },
     });
 
     useEffect(() => {
-        // Function to load more meals when scrolling down
-        const loadMoreMeals = () => {
-            // Check if the user has scrolled to the bottom
-            if (
-                window.innerHeight + document.documentElement.scrollTop ===
-                document.documentElement.offsetHeight
-            ) {
-                // Increment the page number and fetch more meals
-                setPageNumber((prevPageNumber) => prevPageNumber + 1);
-            }
-        };
-
-        // Add the event listener for scrolling
-        window.addEventListener('scroll', loadMoreMeals);
-
-        // Remove the event listener when the component unmounts
-        return () => {
-            window.removeEventListener('scroll', loadMoreMeals);
-        };
-    }, []);
-
-    useEffect(() => {
-        // Filter meals based on the search input
+        // Filter meals based on the search input and category
         const searchFiltered = allMeals.filter((meal) =>
-            meal.title.toLowerCase().includes(searchValue.toLowerCase())
+            meal.title.toLowerCase().includes(searchValue.toLowerCase()) &&
+            (activeTab === 'All' || meal.category.toLowerCase() === activeTab.toLowerCase())
         );
 
-        // Slice the array to get only the meals for the current page
-        const slicedMeals = searchFiltered.slice(0, pageNumber * 10);
+        // Calculate pagination based on the filtered meals
+        const startIndex = (currentPage - 1) * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
+        const pageFilteredMeals = searchFiltered.slice(startIndex, endIndex);
+        setFilteredMeals(pageFilteredMeals);
+    }, [allMeals, mealsCount, currentPage, searchValue, activeTab]);
 
-        setFilteredMeals(slicedMeals);
-    }, [allMeals, searchValue, pageNumber]);
-
-    const handleDelete = async (mealId) => {
-        try {
-            // Send a request to delete the meal with the given ID
-            await axiosPublic.delete(`/meals/${mealId}`);
-
-            // Update the filtered meals by removing the deleted meal
-            setFilteredMeals((prevMeals) => prevMeals.filter((meal) => meal._id !== mealId));
-        } catch (error) {
-            console.error("Error deleting meal:", error);
-            // Handle error (e.g., show an error message to the user)
-        }
+    const handlePageChange = (page) => {
+        setCurrentPage(page);
     };
+
+    const pages = Array.from({ length: Math.ceil(mealsCount / itemsPerPage) }, (_, index) => index);
 
     return (
         <div>
@@ -114,11 +90,10 @@ const AllMeals = () => {
                                         setActiveTab(e.target.value);
                                     }}
                                 >
-                                    {tabs.map((tab) => (
-                                        <option key={tab.id} value={tab.id}>
-                                            {tab.label}
-                                        </option>
-                                    ))}
+                                    <option value="All">All Meals</option>
+                                    <option value="Breakfast">Breakfast</option>
+                                    <option value="Lunch">Lunch</option>
+                                    <option value="Dinner">Dinner</option>
                                 </select>
                             </div>
                         </div>
@@ -163,6 +138,20 @@ const AllMeals = () => {
                                                     </div>
                                                 ))}
                                             </div>
+                                        </div>
+                                        <div>
+                                            {/* Pagination buttons */}
+                                            {pages.map((page) => (
+                                                <button
+                                                    key={page}
+                                                    className={`pb-1 m-1 border-2 rounded-full w-10 h-10 text-[18px] ${
+                                                        page + 1 === currentPage ? 'bg-slate-400 text-white' : 'bg-white text-slate-400'
+                                                    }`}
+                                                    onClick={() => handlePageChange(page + 1)}
+                                                >
+                                                    {page + 1}
+                                                </button>
+                                            ))}
                                         </div>
                                     </div>
                                 </body>

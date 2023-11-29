@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import useAxiosPublic from '../../../Hook/useAxiosPublic/useAxiosPublic';
 import { Link } from 'react-router-dom';
 
+const itemsPerPage = 10;
+
 const AllReviews = () => {
     const [logs, setLogs] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -9,7 +11,7 @@ const AllReviews = () => {
         field: 'liked_count', // Default sort by likes
         order: 'desc', // Default order is descending
     });
-
+    const [currentPage, setCurrentPage] = useState(1);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -45,7 +47,6 @@ const AllReviews = () => {
         fetchData();
     }, []);
 
-
     const handleDeleteReview = async (mealId, reviewId) => {
         try {
             const axiosPublic = useAxiosPublic();
@@ -62,14 +63,12 @@ const AllReviews = () => {
         }
     };
 
-    
     const handleSort = (field) => {
         setSortBy((prevSort) => ({
             field,
             order: prevSort.field === field && prevSort.order === 'asc' ? 'desc' : 'asc',
         }));
     };
-
 
     const sortedLogs = [...logs].sort((a, b) => {
         const orderMultiplier = sortBy.order === 'asc' ? 1 : -1;
@@ -78,6 +77,18 @@ const AllReviews = () => {
         if (a[sortBy.field] > b[sortBy.field]) return 1 * orderMultiplier;
         return 0;
     });
+
+
+//    ?ghfghg
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const paginatedLogs = sortedLogs.slice(startIndex, endIndex);
+
+    const totalPages = Math.ceil(sortedLogs.length / itemsPerPage);
+
+    const handlePageChange = (page) => {
+        setCurrentPage(page);
+    };
 
     return (
         <div className='font-primary bg-[#1965a423] px-5'>
@@ -131,7 +142,7 @@ const AllReviews = () => {
                                     </div>
                                 </div>
                                 <div className="flex-1 sm:flex-none">
-                                    {sortedLogs.flatMap((log, mealIndex) =>
+                                    {paginatedLogs.flatMap((log, mealIndex) =>
                                         log.reviews.map((review, reviewIndex) => (
                                             <div key={`meal-${mealIndex}-review-${reviewIndex}`}>
                                                 <div className="flex flex-col xl:flex-row items-start xl:items-center justify-start xl:justify-between border border-gray-100 hover:bg-[#193ea417] px-10 py-5 duration-300">
@@ -156,6 +167,20 @@ const AllReviews = () => {
                                         ))
                                     )}
                                 </div>
+                            </div>
+                            <div className="flex justify-center mt-4">
+                                {/* Pagination buttons */}
+                                {[...Array(totalPages).keys()].map((page) => (
+                                    <button
+                                        key={page + 1}
+                                        className={`pb-1 m-1 border-2 rounded-full w-10 h-10 text-[18px] ${
+                                            page + 1 === currentPage ? 'bg-slate-400 text-white' : 'bg-white text-slate-400'
+                                        }`}
+                                        onClick={() => handlePageChange(page + 1)}
+                                    >
+                                        {page + 1}
+                                    </button>
+                                ))}
                             </div>
                         </div>
                     </body>

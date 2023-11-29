@@ -1,14 +1,16 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery } from 'react-query';
 import useAxiosPublic from '../../../Hook/useAxiosPublic/useAxiosPublic';
 
 let tabs = [
-    { id: "All", label: "All Meals" },
-    { id: "Breakfast", label: "Breakfast" },
-    { id: "Lunch", label: "Lunch" },
-    { id: "Dinner", label: "Dinner" },
+    { id: 'All', label: 'All Meals' },
+    { id: 'Breakfast', label: 'Breakfast' },
+    { id: 'Lunch', label: 'Lunch' },
+    { id: 'Dinner', label: 'Dinner' },
 ];
+
+const PAGE_SIZE = 10;
 
 const UpcomingMeals = () => {
     const [searchValue, setSearchValue] = useState('');
@@ -27,7 +29,7 @@ const UpcomingMeals = () => {
         queryFn: async () => {
             const res = await axiosPublic.get(`/meals`);
             return res.data;
-        }
+        },
     });
 
     useEffect(() => {
@@ -63,7 +65,9 @@ const UpcomingMeals = () => {
             return (a[sortBy.field] - b[sortBy.field]) * orderMultiplier;
         });
 
-        const slicedMeals = sortedMeals.slice(0, pageNumber * 10);
+        const startIndex = (pageNumber - 1) * PAGE_SIZE;
+        const endIndex = startIndex + PAGE_SIZE;
+        const slicedMeals = sortedMeals.slice(startIndex, endIndex);
         setFilteredMeals(slicedMeals);
     }, [allMeals, activeTab, searchValue, pageNumber, sortBy]);
 
@@ -82,15 +86,12 @@ const UpcomingMeals = () => {
             // Update the filtered meals by removing the deleted meal
             setFilteredMeals((prevMeals) => prevMeals.filter((meal) => meal._id !== mealId));
         } catch (error) {
-            console.error("Error deleting meal:", error);
+            console.error('Error deleting meal:', error);
             // Handle error (e.g., show an error message to the user)
         }
     };
 
-
     const handlePublish = async (mealId) => {
-        console.log(mealId);
-
         try {
             // Fetch the meal with the given ID
             const response = await axiosPublic.get(`/meals/${mealId}`);
@@ -114,10 +115,13 @@ const UpcomingMeals = () => {
                 alert('This meal needs at least 10 likes to be published.');
             }
         } catch (error) {
-            console.error("Error publishing meal:", error);
+            console.error('Error publishing meal:', error);
             // Handle error (e.g., show an error message to the user)
         }
     };
+
+
+    const totalPages = Math.ceil(filteredMeals.length / PAGE_SIZE);
 
 
     return (
@@ -149,6 +153,7 @@ const UpcomingMeals = () => {
                             value={activeTab}
                             onChange={(e) => {
                                 setActiveTab(e.target.value);
+                                setPageNumber(1); // Reset page number when changing the tab
                             }}
                         >
                             {tabs.map((tab) => (
@@ -158,7 +163,6 @@ const UpcomingMeals = () => {
                             ))}
                         </select>
                     </div>
-
                 </div>
                 <div className='w-full min-h-screen flex justify-center items-center bg-[#1965a423]]'>
                     <div className="font-primary max-w-[1700px] w-full px-10 mx-auto duration-300">
@@ -212,8 +216,21 @@ const UpcomingMeals = () => {
                                             </div>
                                         ))}
                                     </div>
-
                                 </div>
+                                {/* Pagination buttons */}
+                                <div className="flex justify-center my-4">
+                                    {Array.from({ length: totalPages }, (_, index) => (
+                                        <button
+                                            key={index + 1}
+                                            className={`mx-1 px-4 py-2 border rounded-full ${index + 1 === pageNumber ? 'bg-slate-400 text-white' : 'bg-white text-slate-400'
+                                                }`}
+                                            onClick={() => setPageNumber(index + 1)}
+                                        >
+                                            {index + 1}
+                                        </button>
+                                    ))}
+                                </div>
+
                             </div>
                         </body>
                     </div>

@@ -1,40 +1,46 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import useAxiosPublic from '../../../Hook/useAxiosPublic/useAxiosPublic';
 import { useQuery } from 'react-query';
 
+const itemsPerPage = 10;
+
 const ManageUsers = () => {
     const [usersData, setUsersData] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
 
     const axiosPublic = useAxiosPublic();
 
     const { data: users = [], isLoading } = useQuery({
         queryKey: ['users'],
         queryFn: async () => {
-            // const res = await axiosSecure.get(`/users/${user?.email}`);
             const res = await axiosPublic.get(`/users`);
-            return setUsersData(res.data);
+            return res.data;
         }
-    })
+    });
 
-    const handleMakeAdmin = async (usersId) => {
-        console.log(usersId);
+    useEffect(() => {
+        // Update usersData based on the current page
+        const startIndex = (currentPage - 1) * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
+        setUsersData(users.slice(startIndex, endIndex));
+    }, [users, currentPage]);
+
+    const handleMakeAdmin = async (userId) => {
+        console.log(userId);
 
         try {
-            await axiosPublic.patch(`/users/${usersId}`, {
+            await axiosPublic.patch(`/users/${userId}`, {
                 role: 'Admin',
             });
 
             const updatedUsers = await axiosPublic.get(`/users`);
             setUsersData(updatedUsers.data);
-
         } catch (error) {
             console.error("Error updating user role:", error);
-            // Handle error (e.g., show an error message to the user)
         }
     };
 
     const [searchQuery, setSearchQuery] = useState('');
-
 
     const handleSearch = async (e) => {
         e.preventDefault();
@@ -49,11 +55,11 @@ const ManageUsers = () => {
         }
     };
 
+    const handlePageChange = (page) => {
+        setCurrentPage(page);
+    };
 
-
-
-
-    console.log(usersData);
+    const pages = Array.from({ length: Math.ceil(users.length / itemsPerPage) }, (_, index) => index + 1);
 
     return (
         <div>
@@ -63,7 +69,6 @@ const ManageUsers = () => {
                         <span className="loading loading-spinner text-[#B3845A] loading-lg"></span>
                     </div>
                 ) : (
-
                     <div className="font-primary max-w-[1700px] w-full px-10 mx-auto duration-300">
                         <h1 className="text-xl text-center md:text-3xl lg:text-4xl xl:text-5xl font-bold mt-5 lg:mt-10 my-5 lg:my-10 px-10 duration-300">
                             <span className="">Manage </span>
@@ -111,12 +116,24 @@ const ManageUsers = () => {
                                                 >
                                                     Make Admin
                                                 </button>
-
                                                 <h5 className="w-full mr-10">{user.badge}</h5>
-                                                {/* <button onClick={(e) => handleCancel(e, users._id)} className="font-bold text-[#1965a4be] hover:text-red-400 duration-300">Cancel</button> */}
                                             </div>
                                         ))}
                                     </div>
+                                </div>
+                                {/* Pagination buttons */}
+                                <div className="flex justify-center mt-4">
+                                    {pages.map((page) => (
+                                        <button
+                                            key={page}
+                                            className={`pb-1 m-1 border-2 rounded-full w-10 h-10 text-[18px] ${
+                                                page === currentPage ? 'bg-slate-400 text-white' : 'bg-white text-slate-400'
+                                            }`}
+                                            onClick={() => handlePageChange(page)}
+                                        >
+                                            {page}
+                                        </button>
+                                    ))}
                                 </div>
                             </div>
                         </body>
