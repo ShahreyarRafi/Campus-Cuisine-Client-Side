@@ -72,7 +72,6 @@ const AdminProfile = () => {
     }
 
 
-
     return (
         <div className='w-full h-[69vh] flex justify-center items-center font-primary'>
             <div>

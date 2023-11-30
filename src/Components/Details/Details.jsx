@@ -8,7 +8,7 @@ import { v4 as uuidv4 } from 'uuid';
 import useAxiosPublic from '../../Hook/useAxiosPublic/useAxiosPublic';
 import { useQuery } from 'react-query';
 import useAxiosSecure from '../../Hook/useAxiosSecure';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import useAuth from '../../Hook/useAuth';
 
 
@@ -17,18 +17,34 @@ import useAuth from '../../Hook/useAuth';
 
 
 
-const Details = ({ meal }) => {
+const Details = ({ }) => {
     const { user } = useContext(AuthContext);
     const axiosPublic = useAxiosPublic();
     const axiosSecure = useAxiosSecure();
     const [usersData, setUsersData] = useState([]);
     const navigate = useNavigate();
     const { logout } = useAuth();
+    const { id } = useParams()
+
+    console.log(id);
+
+
+    const { data: allMeals = [], refetch, isLoading } = useQuery({
+        queryKey: ['meals'],
+        queryFn: async () => {
+            const res = await axiosPublic.get(`/meals`);
+            return res.data;
+        },
+    });
+
+    const meal = allMeals?.find((meal) => meal?._id === id)
+
+    console.log(meal);
 
 
 
 
-    const { data: users = [], isLoading } = useQuery({
+    const { data: users = [] } = useQuery({
         queryKey: ['users'],
         queryFn: async () => {
             // const res = await axiosSecure.get(`/users/${user?.email}`);
@@ -39,6 +55,14 @@ const Details = ({ meal }) => {
 
 
     const currentUser = usersData.find((userData) => userData?.email.toLowerCase() === user?.email.toLowerCase());
+
+    console.log(currentUser?.likedMeals);
+
+    console.log(meal?._id);
+
+    const hasLikedMeal = currentUser?.likedMeals.includes(meal?._id);
+
+    console.log(hasLikedMeal);
 
     const holdsPackages = ["Silver", "Gold", "Platinum"].includes(currentUser?.badge);
 
@@ -215,7 +239,16 @@ const Details = ({ meal }) => {
                 })
                     .then(res => res.json())
                     .then(data => {
-                        // Handle the response from the server if needed
+                        if (data.modifiedCount > 0) {
+                            refetch()
+                            Swal.fire({
+                                position: "top-end",
+                                icon: "success",
+                                title: "Review Added",
+                                showConfirmButton: false,
+                                timer: 2000
+                            });
+                        }
                     })
                     .catch(error => {
                         console.error("Error updating like count:", error);
@@ -244,23 +277,66 @@ const Details = ({ meal }) => {
             return
         }
 
+        if (hasLikedMeal) {
+            Swal.fire({
+                position: "top-end",
+                icon: "info",
+                title: "You have already liked this meal",
+                showConfirmButton: false,
+                timer: 2000
+            });
+            return
+        }
+
         // For simplicity, updating the state locally. 
         setIsLiked(true);
 
         // You may want to send a request to the server to update the like count.
-
         axiosSecure.put(`/api/like-meal/${_id}`, {
             liked_count: liked_count + 1,
         })
-            .then(response => {
-                // Handle the response from the server if needed
+            .then(res => {
+                if (res.data.modifiedCount > 0) {
+                    console.log('liked:', _id);
+
+                    // Assuming you have access to the user ID, replace 'userId' with the actual variable holding the user ID.
+                    const userId = currentUser?._id;
+
+                    // Update user's likedMeals array
+                    axiosSecure.put(`/api/user/${userId}/like-meal`, { mealId: _id })
+                        .then(userRes => {
+                            console.log('liked:', userRes.data.message);
+                            if (userRes.data.message === 'success'){
+                                refetch()
+                                Swal.fire({
+                                    position: "top-end",
+                                    icon: "success",
+                                    title: "You have liked this meal",
+                                    showConfirmButton: false,
+                                    timer: 2000
+                                });
+                            }
+
+                        })
+                        .catch(userError => {
+                            console.error('Error updating user liked meals:', userError);
+                            // Handle error
+                        });
+                }
             })
             .catch(error => {
                 console.error('Error updating like count:', error);
                 // Handle error
             });
-    };
+    }
 
+    if (isLoading) {
+        return (
+            <div className='h-[69vh] flex justify-center items-center'>
+                <span className="loading loading-spinner text-[#B3845A] loading-lg"></span>
+            </div>
+        );
+    }
 
     return (
         <div>
@@ -305,7 +381,7 @@ const Details = ({ meal }) => {
                             </button>
                             <button
                                 onClick={handleLikeClick}
-                                className={`text-4xl ${isLiked ? 'text-red-500' : 'text-gray-500'}`}
+                                className={`text-4xl ${isLiked || hasLikedMeal ? 'text-red-500' : 'text-gray-500'}`}
                             >
                                 <FaHeart />
                             </button>

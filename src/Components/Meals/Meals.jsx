@@ -85,6 +85,8 @@ const Meals = ({ allMeals }) => {
     }, [allMeals, activeTab, searchValue, pageNumber, minPrice, maxPrice]);
 
 
+    
+
 
     return (
         <div>
