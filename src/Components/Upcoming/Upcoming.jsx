@@ -15,12 +15,11 @@ const Upcoming = () => {
 
     const [likedMeals, setLikedMeals] = useState({});
 
-    const [isLiked, setIsLiked] = useState(false);
 
     const { isPending, data: upcoming } = useQuery({
         queryKey: ['upcoming'],
         queryFn: async () => {
-            const res = await fetch('http://localhost:5000/Upcoming')
+            const res = await fetch('https://campus-cuisine.vercel.app/Upcoming')
             return res.json();
         }
     })
@@ -40,7 +39,7 @@ const Upcoming = () => {
             }));
 
             // You may want to send a request to the server to update the like count.
-            fetch(`http://localhost:5000/api/like-meal/${meal._id}`, {
+            fetch(`https://campus-cuisine.vercel.app/api/like-meal/${meal._id}`, {
                 method: 'PUT',
                 headers: {
                     'content-type': 'application/json'

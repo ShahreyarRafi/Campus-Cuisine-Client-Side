@@ -246,22 +246,27 @@ const Navbar = () => {
                                                                                     {user.email}
                                                                                 </p>
                                                                             )}
-                                                                            <Link to='dashboard'>
-                                                                                <button
-                                                                                    type="button"
-                                                                                    className="text-sm xl:text-base font-semibold text-red-600 hover:text-red-900"
-                                                                                >
-                                                                                    DASHBOARD
-                                                                                </button>
-                                                                            </Link>
-                                                                            <Link to='admin/dashboard'>
-                                                                                <button
-                                                                                    type="button"
-                                                                                    className="text-sm xl:text-base font-semibold text-red-600 hover:text-red-900"
-                                                                                >
-                                                                                    ADMIN DASHBOARD
-                                                                                </button>
-                                                                            </Link>
+                                                                            {!isAdmin && (
+                                                                                <Link to='dashboard'>
+                                                                                    <button
+                                                                                        type="button"
+                                                                                        className="text-sm xl:text-base font-semibold text-red-600 hover:text-red-900"
+                                                                                    >
+                                                                                        DASHBOARD
+                                                                                    </button>
+                                                                                </Link>
+                                                                            )}
+
+                                                                            {isAdmin && (
+                                                                                <Link to='admin/dashboard'>
+                                                                                    <button
+                                                                                        type="button"
+                                                                                        className="text-sm xl:text-base font-semibold text-red-600 hover:text-red-900"
+                                                                                    >
+                                                                                        ADMIN DASHBOARD
+                                                                                    </button>
+                                                                                </Link>
+                                                                            )}
                                                                             <button
                                                                                 type="button"
                                                                                 onClick={handleLogout}

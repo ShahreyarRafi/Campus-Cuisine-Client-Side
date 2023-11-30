@@ -30,7 +30,7 @@ const AdminProfile = () => {
     // const {data} = useQuery({
     //     queryKey: ['users'],
     //     queryFn: async () => {
-    //         const res = await fetch(`http://localhost:5000/users/${user?.email}`)
+    //         const res = await fetch(`https://campus-cuisine.vercel.app/users/${user?.email}`)
     //         return res.json();
     //     }
     // })

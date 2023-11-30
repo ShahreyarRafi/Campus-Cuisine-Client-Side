@@ -17,7 +17,7 @@ import useAuth from '../../Hook/useAuth';
 
 
 
-const Details = ({ }) => {
+const Details = () => {
     const { user } = useContext(AuthContext);
     const axiosPublic = useAxiosPublic();
     const axiosSecure = useAxiosSecure();
@@ -26,7 +26,6 @@ const Details = ({ }) => {
     const { logout } = useAuth();
     const { id } = useParams()
 
-    console.log(id);
 
 
     const { data: allMeals = [], refetch, isLoading } = useQuery({
@@ -38,10 +37,6 @@ const Details = ({ }) => {
     });
 
     const meal = allMeals?.find((meal) => meal?._id === id)
-
-    console.log(meal);
-
-
 
 
     const { data: users = [] } = useQuery({
@@ -56,13 +51,7 @@ const Details = ({ }) => {
 
     const currentUser = usersData.find((userData) => userData?.email.toLowerCase() === user?.email.toLowerCase());
 
-    console.log(currentUser?.likedMeals);
-
-    console.log(meal?._id);
-
     const hasLikedMeal = currentUser?.likedMeals.includes(meal?._id);
-
-    console.log(hasLikedMeal);
 
     const holdsPackages = ["Silver", "Gold", "Platinum"].includes(currentUser?.badge);
 
@@ -127,7 +116,7 @@ const Details = ({ }) => {
         console.log(reqMealData);
 
         // Send data to the server
-        fetch('http://localhost:5000/api/request-meal', {
+        fetch('https://campus-cuisine.vercel.app/api/request-meal', {
             method: 'POST',
             headers: {
                 'content-type': 'application/json'
@@ -213,7 +202,7 @@ const Details = ({ }) => {
         const updatedReviews = [...reviews, newReview];
 
         // Send data to the server
-        fetch('http://localhost:5000/api/add-review', {
+        fetch('https://campus-cuisine.vercel.app/api/add-review', {
             method: 'POST',
             headers: {
                 'content-type': 'application/json'
@@ -228,13 +217,13 @@ const Details = ({ }) => {
                 // Assuming the server responds with the updated meal data
                 // You may want to handle the response accordingly
                 console.log(data);
-                fetch(`http://localhost:5000/api/review-count/${_id}`, {
+                fetch(`https://campus-cuisine.vercel.app/api/review-count/${_id}`, {
                     method: 'PUT',
                     headers: {
                         'content-type': 'application/json'
                     },
                     body: JSON.stringify({
-                        liked_count: review_count + 1
+                        review_count: review_count + 1
                     })
                 })
                     .then(res => res.json())

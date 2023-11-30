@@ -40,7 +40,7 @@ const router = createBrowserRouter([
             {
                 path: '/',
                 element: <Home></Home>,
-                loader: () => fetch('http://localhost:5000/meals')
+                loader: () => fetch('https://campus-cuisine.vercel.app/meals')
             },
             {
                 path: 'register',
@@ -61,7 +61,7 @@ const router = createBrowserRouter([
             {
                 path: 'meals',
                 element: <MealsPage></MealsPage>,
-                loader: () => fetch('http://localhost:5000/meals')
+                loader: () => fetch('https://campus-cuisine.vercel.app/meals')
             },
             {
                 path: 'upcoming',
@@ -70,79 +70,76 @@ const router = createBrowserRouter([
             {
                 path: 'meals/:id',
                 element: <DetailsPage></DetailsPage>,
-                loader: ({ params }) => fetch(`http://localhost:5000/meals/${params.id}`)
             },
 
-
-            {
-                path: 'cart',
-                element: (
-                    <PrivateRoute>
-                        <CartPage></CartPage>
-                    </PrivateRoute>
-                ),
-                // loader: () => fetch('http://localhost:5000/cartItems'),
-            },
 
         ]
     },
     {
         path: 'dashboard',
-        element: <UserDashboard></UserDashboard>,
+        element: (
+            <PrivateRoute>
+                <UserDashboard></UserDashboard>
+            </PrivateRoute>
+        ),
         children: [
             {
                 path: 'user/profile',
-                element: <UserProfile></UserProfile>
+                element: (<PrivateRoute><UserProfile></UserProfile></PrivateRoute>)
             },
             {
                 path: 'user/requested-meals',
-                element: <UserRequestedMeals></UserRequestedMeals>
+                element: (<PrivateRoute><UserRequestedMeals></UserRequestedMeals></PrivateRoute>)
             },
             {
                 path: 'user/reviews',
-                element: <UserReviews></UserReviews>
+                element: (<PrivateRoute><UserReviews></UserReviews></PrivateRoute>)
             },
             {
                 path: 'user/payment',
-                element: <Payment></Payment>
+                element: (<PrivateRoute><Payment></Payment></PrivateRoute>)
             },
         ]
     },
     {
         path: 'admin/dashboard',
-        element: <AdminDashboard></AdminDashboard>,
+        element: (
+            <PrivateRoute>
+                <AdminDashboard></AdminDashboard>
+            </PrivateRoute>
+        ),
         children: [
             {
                 path: 'admin-profile',
-                element: <AdminProfile></AdminProfile>
+                element: (<PrivateRoute><AdminProfile></AdminProfile></PrivateRoute>),
             },
             {
                 path: 'manage-users',
-                element: <ManageUsers></ManageUsers>
+                element: (<PrivateRoute><ManageUsers></ManageUsers></PrivateRoute>),
             },
             {
                 path: 'add-meal',
-                element: <AddMeal></AddMeal>
+                element: (<PrivateRoute><AddMeal></AddMeal></PrivateRoute>),
             },
             {
                 path: 'all-meals',
-                element: <AllMeals></AllMeals>
+                element: (<PrivateRoute><AllMeals></AllMeals></PrivateRoute>),
             },
             {
                 path: 'all-reviews',
-                element: <AllReviews></AllReviews>
+                element: (<PrivateRoute><AllReviews></AllReviews></PrivateRoute>),
             },
             {
                 path: 'serve-meals',
-                element: <ServeMeals></ServeMeals>
+                element: (<PrivateRoute><ServeMeals></ServeMeals></PrivateRoute>),
             },
             {
                 path: 'upcoming-meals',
-                element: <UpcomingMeals></UpcomingMeals>
+                element: (<PrivateRoute><UpcomingMeals></UpcomingMeals></PrivateRoute>),
             },
             {
                 path: 'update-meal/:id',
-                element: <UpdateMeal></UpdateMeal>
+                element: (<PrivateRoute><UpdateMeal></UpdateMeal></PrivateRoute>),
             },
 
         ]

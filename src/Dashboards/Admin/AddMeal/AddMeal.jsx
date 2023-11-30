@@ -2,6 +2,7 @@ import { useContext, useState } from 'react';
 import Swal from 'sweetalert2';
 import { AuthContext } from '../../../services/Firebase/AuthProvider';
 import useAxiosPublic from '../../../Hook/useAxiosPublic/useAxiosPublic';
+import { useForm, Controller } from 'react-hook-form';
 
 const formatCurrentDateTime = () => {
     const currentDate = new Date();
@@ -12,8 +13,12 @@ const formatCurrentDateTime = () => {
 const AddMeal = () => {
     const { user } = useContext(AuthContext);
     const axiosPublic = useAxiosPublic();
-
     const [postTime, setPostTime] = useState(formatCurrentDateTime());
+
+    const { register, handleSubmit, formState: { errors }, control } = useForm();
+    const onSubmit = (data) => {
+        console.log(data)
+    };
 
     const handlePostTimeChange = (e) => {
         setPostTime(e.target.value);
@@ -26,8 +31,18 @@ const AddMeal = () => {
     const [price, setPrice] = useState()
     const [description, setDescription] = useState()
 
-    const handleSubmit = async (event, action) => {
-        event.preventDefault();
+    const handleAddMeal = async (action) => {
+
+
+        if (!image || !title || !ingredients || !category || !price || !description) {
+            Swal.fire({
+                title: 'Error!',
+                text: 'Please fill in all fields before submitting',
+                icon: 'error',
+                confirmButtonText: 'OK',
+            });
+            return;
+        }
 
         const newMeal = {
             image,
@@ -82,41 +97,6 @@ const AddMeal = () => {
     };
 
 
-
-    //         fetch('https://bd-jobs-server.vercel.app/add-job', {
-    //             method: 'POST',
-    //             headers: {
-    //                 'Content-Type': 'application/json'
-    //             },
-    //             body: JSON.stringify(newJob)
-    //         })
-    //             .then(response => {
-    //                 if (!response.ok) {
-    //                     throw new Error(`Network response was not ok (status: ${response.status})`);
-    //                 }
-    //                 return response; // Parse the response as JSON
-    //             })
-    //             .then(data => {
-    //                 console.log(data);
-    //                 if (data.insertedId) {
-    //                     Swal.fire({
-    //                         title: 'Success!',
-    //                         text: 'Job Added Successfully',
-    //                         icon: 'success',
-    //                         confirmButtonText: 'OK'
-    //                     });
-    //                 }
-    //             })
-    //             .catch(error => {
-    //                 console.error('Error:', error);
-    //                 // Handle errors here
-    //             });
-
-    //     }
-    // };
-
-
-
     return (
         <div>
             <div className="bg-[#1965a423] px-5 md:px-24 py-24 font-primary duration-300">
@@ -125,7 +105,7 @@ const AddMeal = () => {
                         <span className="">Add a </span>
                         <span className="text-[#B3845A]">Meal</span>
                     </h1>
-                    <form onSubmit={handleSubmit}>
+                    <form onSubmit={handleSubmit(onSubmit)}>
                         {/* Banner Image and Company Logo row */}
                         <div className="md:flex mb-5 md:mb-8">
                             <div className="form-control md:w-1/2 mb-4 md:mb-0">
@@ -134,13 +114,13 @@ const AddMeal = () => {
                                 </label>
                                 <label className="rounded-lg">
                                     <input
+                                        {...register("image", { required: true })}
                                         type="text"
                                         name="image"
                                         placeholder="Image URL"
                                         onChange={(event) => setImage(event.target.value)}
-                                        className="input input-bordered w-full bg-white duration-300"
-                                    />
-
+                                        className="input input-bordered w-full bg-white duration-300" />
+                                    {errors.image && <span className='text-red-600'>Image URL is required</span>}
                                 </label>
                             </div>
                             <div className="form-control md:w-1/2 md:md:ml-4">
@@ -149,12 +129,13 @@ const AddMeal = () => {
                                 </label>
                                 <label className="rounded-lg">
                                     <input
+                                        {...register("title", { required: true })}
                                         type="text"
                                         name="title"
                                         placeholder="Meal Title"
                                         onChange={(event) => setTitle(event.target.value)}
-                                        className="input input-bordered w-full  bg-white duration-300"
-                                    />
+                                        className="input input-bordered w-full  bg-white duration-300" />
+                                    {errors.title && <span className='text-red-600'>Title is required</span>}
                                 </label>
                             </div>
                         </div>
@@ -166,26 +147,43 @@ const AddMeal = () => {
                                 </label>
                                 <label className="rounded-lg">
                                     <input
+                                        {...register("ingredients", { required: true })}
                                         type="text"
                                         name="ingredients"
                                         placeholder="Meal Ingredients"
                                         onChange={(event) => setIngredients(event.target.value)}
-                                        className="input input-bordered w-full  bg-white duration-300"
-                                    />
+                                        className="input input-bordered w-full  bg-white duration-300" />
+                                    {errors.ingredients && <span className='text-red-600'>Ingredients are required</span>}
                                 </label>
                             </div>
                             <div className="form-control md:w-1/2 md:ml-4">
                                 <label className="label">
-                                    <span className="text-black  duration-300">Category</span>
+                                    <span className="text-black duration-300">Category</span>
                                 </label>
                                 <label className="rounded-lg">
-                                    <select name="meal_category" onChange={(event) => setCategory(event.target.value)} className="input input-bordered w-full  bg-white dark:text-gray-400 duration-300">
-                                        <option value="" disabled selected >Select Meal Category</option>
-                                        <option value="Breakfast">Breakfast</option>
-                                        <option value="Lunch">Lunch</option>
-                                        <option value="Dinner">Dinner</option>
-                                    </select>
+                                    {/* Use Controller for the select field */}
+                                    <Controller
+                                        name="meal_category"
+                                        control={control}
+                                        rules={{ required: true }}
+                                        render={({ field }) => (
+                                            <select
+                                                {...field}
+                                                onChange={(e) => {
+                                                    field.onChange(e);
+                                                    setCategory(e.target.value); // Log the selected value
+                                                }}
+                                                className="input input-bordered w-full bg-white dark:text-gray-400 duration-300"
+                                            >
+                                                <option value="" disabled>Select Meal Category</option>
+                                                <option value="Breakfast">Breakfast</option>
+                                                <option value="Lunch">Lunch</option>
+                                                <option value="Dinner">Dinner</option>
+                                            </select>
+                                        )}
+                                    />
                                 </label>
+                                {errors.meal_category && <span className='text-red-600'>Meal Category is required</span>}
                             </div>
                         </div>
                         {/* Posted By Email and Job Title row */}
@@ -196,12 +194,13 @@ const AddMeal = () => {
                                 </label>
                                 <label className="rounded-lg">
                                     <input
+                                        {...register("price", { required: true })}
                                         type="text"
                                         name="price"
                                         placeholder="Price Here"
                                         onChange={(event) => setPrice(event.target.value)}
-                                        className="input input-bordered w-full text-gray-400  bg-white duration-300"
-                                    />
+                                        className="input input-bordered w-full text-gray-400  bg-white duration-300" />
+                                    {errors.price && <span className='text-red-600'>Price is required</span>}
                                 </label>
                             </div>
                             <div className="form-control md:w-1/2 md:ml-4">
@@ -210,13 +209,14 @@ const AddMeal = () => {
                                 </label>
                                 <label className="rounded-lg">
                                     <input
+                                        {...register("post_time", { required: true })}
                                         type="datetime-local"
                                         name="post_time"
                                         value={postTime}
                                         onChange={handlePostTimeChange}
                                         readOnly
-                                        className="input input-bordered w-full dark-bg-zinc-800 bg-white duration-300"
-                                    />
+                                        className="input input-bordered w-full dark-bg-zinc-800 bg-white duration-300" />
+                                    {errors.post_time && <span className='text-red-600'>Post time is required</span>}
                                 </label>
                             </div>
                         </div>
@@ -227,28 +227,28 @@ const AddMeal = () => {
                             </label>
                             <label className="rounded-lg">
                                 <textarea
+                                    {...register("meal_description", { required: true })}
                                     name="meal_description"
                                     placeholder="Meal Description"
                                     onChange={(event) => setDescription(event.target.value)}
-                                    className="textarea input-bordered w-full h-40 dark-bg-zinc-800 bg-white duration-300"
-                                />
+                                    className="textarea input-bordered w-full h-40 dark-bg-zinc-800 bg-white duration-300" />
+                                {errors.meal_description && <span className='text-red-600'>Description is required</span>}
                             </label>
                         </div>
                         <button
-                            type="button"
-                            onClick={(e) => handleSubmit(e, 'addMeal')}
+                            type="submit"
+                            onClick={() => handleAddMeal('addMeal')}
                             className="btn mb-4 w-full text-white text-lg bg-[#B3845A] hover:bg-[#ebb587]"
                         >
                             Add Meal
                         </button>
                         <button
-                            type="button"
-                            onClick={(e) => handleSubmit(e, 'addToUpcoming')}
+                            type="submit"
+                            onClick={() => handleAddMeal('addToUpcoming')}
                             className="btn w-full text-white text-lg bg-[#B3845A] hover:bg-[#ebb587]"
                         >
                             Add to Upcoming
                         </button>
-
                     </form>
                 </div>
             </div>

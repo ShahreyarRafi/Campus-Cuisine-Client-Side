@@ -12,7 +12,6 @@ const AllMeals = () => {
     const [activeTab, setActiveTab] = useState('All');
     const [mealsCount, setMealsCount] = useState(0);
     const [currentPage, setCurrentPage] = useState(1);
-
     const axiosPublic = useAxiosPublic();
 
     const { data: allMeals = [], isLoading } = useQuery({
