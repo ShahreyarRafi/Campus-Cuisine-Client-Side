@@ -12,21 +12,20 @@ const AllReviews = () => {
         order: 'desc', // Default order is descending
     });
     const [currentPage, setCurrentPage] = useState(1);
+    const axiosPublic = useAxiosPublic();
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const axiosPublic = useAxiosPublic();
+
                 const { data: meals = [] } = await axiosPublic.get(`/meals`);
 
                 const mealLogs = meals.map((meal) => ({
-                    meal_id: meal._id,
-                    mealTitle: meal.title,
-                    liked_count: meal.liked_count,
-                    review_count: meal.review_count,
+
                     reviews: meal.reviews.map((review) => ({
                         review_id: review.review_id,
                         meal_id: review.meal_id,
+                        title: review.title,
                         reviewerName: review.name,
                         reviewerEmail: review.email,
                         liked_count: review.liked_count,
@@ -69,22 +68,34 @@ const AllReviews = () => {
             order: prevSort.field === field && prevSort.order === 'asc' ? 'desc' : 'asc',
         }));
     };
-
     const sortedLogs = [...logs].sort((a, b) => {
         const orderMultiplier = sortBy.order === 'asc' ? 1 : -1;
 
-        if (a[sortBy.field] < b[sortBy.field]) return -1 * orderMultiplier;
-        if (a[sortBy.field] > b[sortBy.field]) return 1 * orderMultiplier;
+        const fieldA = sortBy.field === 'liked_count' ? a.liked_count : sortBy.field === 'review_count' ? a.review_count : a[sortBy.field];
+        const fieldB = sortBy.field === 'liked_count' ? b.liked_count : sortBy.field === 'review_count' ? b.review_count : b[sortBy.field];
+
+        if (fieldA < fieldB) return -1 * orderMultiplier;
+        if (fieldA > fieldB) return 1 * orderMultiplier;
         return 0;
     });
 
 
-//    ?ghfghg
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
-    const paginatedLogs = sortedLogs.slice(startIndex, endIndex);
+    // Calculate the total number of reviews (including meals and individual reviews)
+    const totalReviews = sortedLogs.reduce((acc, log) => acc + log.reviews.length, 0);
 
-    const totalPages = Math.ceil(sortedLogs.length / itemsPerPage);
+    // Calculate the total number of pages based on the number of reviews
+    const totalPages = Math.ceil(totalReviews / itemsPerPage);
+
+    // Calculate the starting index for the paginated logs
+    const startIndex = (currentPage - 1) * itemsPerPage;
+
+    // Calculate the ending index for the paginated logs
+    const endIndex = Math.min(startIndex + itemsPerPage, totalReviews);
+
+    // Extract the paginated logs based on the calculated indices
+    const paginatedLogs = sortedLogs
+        .flatMap((log) => log.reviews)
+        .slice(startIndex, endIndex);
 
     const handlePageChange = (page) => {
         setCurrentPage(page);
@@ -142,30 +153,27 @@ const AllReviews = () => {
                                     </div>
                                 </div>
                                 <div className="flex-1 sm:flex-none">
-                                    {paginatedLogs.flatMap((log, mealIndex) =>
-                                        log.reviews.map((review, reviewIndex) => (
-                                            <div key={`meal-${mealIndex}-review-${reviewIndex}`}>
-                                                <div className="flex flex-col xl:flex-row items-start xl:items-center justify-start xl:justify-between border border-gray-100 hover:bg-[#193ea417] px-10 py-5 duration-300">
-                                                    <h5 className="w-[140%] mr-10 text-lg font-semibold line-clamp-1 truncate">{log.mealTitle}</h5>
-                                                    <h5 className="max-w-[80px] w-full mr-10">{log.liked_count}</h5>
-                                                    <h5 className="max-w-[80px] w-full mr-10">{log.review_count}</h5>
-                                                    <h5 className="max-w-[80px] w-full mr-10">{review.ratings}</h5>
-                                                    <h5 className="w-[140%] mr-10 truncate">{review.reviewText}</h5>
-                                                    <Link to={`/meals/${log.meal_id}`}
-                                                        className='max-w-[80px] w-full font-bold text-[#1965a4be] hover:text-sky-400 mr-5 duration-300'
-                                                    >
-                                                        View Meal
-                                                    </Link>
-                                                    <button
-                                                        className='max-w-[80px] w-full font-bold text-red-600 hover:text-red-400 duration-300'
-                                                        onClick={() => handleDeleteReview(log.meal_id, review.review_id)}
-                                                    >
-                                                        Delete
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        ))
-                                    )}
+                                    {paginatedLogs.map((review, index) => (
+                                        <div key={index} className="flex items-center justify-between border-t border-gray-100 py-3">
+                                            <h5 className="w-[140%] mr-10 text-black">{review.title}</h5>
+                                            <h5 className="max-w-[80px] w-full mr-10">{review.liked_count}</h5>
+                                            <h5 className="max-w-[80px] w-full mr-10">{review.review_count}</h5>
+                                            <h5 className="max-w-[80px] w-full mr-10">{review.ratings}</h5>
+                                            <h5 className="w-[140%] mr-10 truncate">{review.reviewText}</h5>
+                                            <Link
+                                                to={`/meals/${review.meal_id}`}
+                                                className='max-w-[80px] w-full mr-5 font-bold text-[#1965a4be] hover:text-sky-400  duration-300'
+                                            >
+                                                View Meal
+                                            </Link>
+                                            <button
+                                                className='max-w-[80px] w-full mr-10 font-bold text-red-600 hover:text-red-400 duration-300'
+                                                onClick={() => handleDeleteReview(review.meal_id, review.review_id)}
+                                            >
+                                                Delete
+                                            </button>
+                                        </div>
+                                    ))}
                                 </div>
                             </div>
                             <div className="flex justify-center mt-4">
@@ -173,9 +181,8 @@ const AllReviews = () => {
                                 {[...Array(totalPages).keys()].map((page) => (
                                     <button
                                         key={page + 1}
-                                        className={`pb-1 m-1 border-2 rounded-full w-10 h-10 text-[18px] ${
-                                            page + 1 === currentPage ? 'bg-slate-400 text-white' : 'bg-white text-slate-400'
-                                        }`}
+                                        className={`pb-1 m-1 border-2 rounded-full w-10 h-10 text-[18px] ${page + 1 === currentPage ? 'bg-slate-400 text-white' : 'bg-white text-slate-400'
+                                            }`}
                                         onClick={() => handlePageChange(page + 1)}
                                     >
                                         {page + 1}

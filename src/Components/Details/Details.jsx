@@ -12,10 +12,11 @@ import { useNavigate, useParams } from 'react-router-dom';
 import useAuth from '../../Hook/useAuth';
 
 
-
-
-
-
+const formatCurrentDateTime = () => {
+    const currentDate = new Date();
+    const formattedDate = currentDate.toISOString().slice(0, 19);
+    return formattedDate;
+};
 
 const Details = () => {
     const { user } = useContext(AuthContext);
@@ -25,7 +26,9 @@ const Details = () => {
     const navigate = useNavigate();
     const { logout } = useAuth();
     const { id } = useParams()
+    const currentDate = formatCurrentDateTime();
 
+  
 
 
     const { data: allMeals = [], refetch, isLoading } = useQuery({
@@ -51,7 +54,7 @@ const Details = () => {
 
     const currentUser = usersData.find((userData) => userData?.email.toLowerCase() === user?.email.toLowerCase());
 
-    const hasLikedMeal = currentUser?.likedMeals.includes(meal?._id);
+    const hasLikedMeal = currentUser?.likedMeals?.includes(meal?._id);
 
     const holdsPackages = ["Silver", "Gold", "Platinum"].includes(currentUser?.badge);
 
@@ -193,6 +196,7 @@ const Details = () => {
             name: user?.displayName,
             email: user?.email,
             title: title,
+            review_time: currentDate,
             liked_count: liked_count,
             review_count: review_count,
             ratings: parseFloat(rating),

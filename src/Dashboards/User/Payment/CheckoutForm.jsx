@@ -1,5 +1,5 @@
 import { CardElement, useElements, useStripe } from '@stripe/react-stripe-js';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import useAxiosSecure from '../../../Hook/useAxiosSecure'
 import useAuth from '../../../Hook/useAuth';
 import { useQuery } from 'react-query';
@@ -7,7 +7,6 @@ import useAxiosPublic from '../../../Hook/useAxiosPublic/useAxiosPublic';
 import Swal from 'sweetalert2';
 
 
-// myyyyyyyyy;
 
 const CheckoutForm = ({ totalPrice, selectedPlan }) => {
 
@@ -34,10 +33,7 @@ const CheckoutForm = ({ totalPrice, selectedPlan }) => {
     })
 
 
-
     const currentUser = usersData.find((userData) => userData?.email.toLowerCase() === user?.email.toLowerCase());
-
-
 
 
     useEffect(() => {
@@ -113,11 +109,8 @@ const CheckoutForm = ({ totalPrice, selectedPlan }) => {
                 console.log('transaction id', paymentIntent.id);
                 setTransactionId(paymentIntent.id);
                 handlePaymentSuccess();
-
             }
         }
-
-
     }
 
     return (

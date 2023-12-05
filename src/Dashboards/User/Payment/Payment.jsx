@@ -29,7 +29,7 @@ const Payment = () => {
     
 
     return (
-        <div className='flex justify-center py-20'>
+        <div className='flex justify-center py-20 min-h-[72vh] font-primary text-center'>
             <div className='max-w-3xl'>
                 <h2 className='text-3xl font-bold'>Payment Page</h2>
                 <Elements stripe={stripePromise}>

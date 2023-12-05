@@ -8,6 +8,9 @@ import profileDark from '../../../assets/images/userIconBlack.png';
 import { AuthContext } from "../../../services/Firebase/AuthProvider";
 import { DarkModeSwitch } from 'react-toggle-dark-mode';
 import useAdmin from '../../../Hook/useAdmin';
+import { useQuery } from 'react-query';
+import { IoMdNotificationsOutline } from "react-icons/io";
+
 
 
 
@@ -45,6 +48,15 @@ const Navbar = () => {
     useEffect(() => {
         document.documentElement.classList.toggle('dark', theme);
     }, [theme]);
+
+    const { isPending, data: upcoming } = useQuery({
+        queryKey: ['upcoming'],
+        queryFn: async () => {
+            const res = await fetch('https://campus-cuisine.vercel.app/Upcoming')
+            return res.json();
+        }
+    })
+
 
     return (
         <nav className="relative flex flex-wrap items-center justify-between px-2 py-4 font-primary bg-slate-100 dark:bg-[#062230] duration-300">
@@ -143,14 +155,15 @@ const Navbar = () => {
                                     </li>
                                 )}
 
-                                <a className="nav-item lg:my-1 xl:mx-3 flex items-center text-sm xl:text-base uppercase font-semibold  text-black dark:text-white hover:opacity-75 hover:rounded-full duration-300 ">
+                                <a className="nav-itemlg:my-1 xl:mx-3 flex items-center text-sm xl:text-base uppercase font-semibold  text-black dark:text-white hover:opacity-75 hover:rounded-full duration-300 ">
                                     <NavLink
                                         to="/upcoming"
                                         className={({ isActive, isPending }) =>
-                                            isPending ? "pending" : isActive ? "text-[#B3845A]" : ""
+                                            isPending ? "pending" : isActive ? "text-[#B3845A] flex items-center gap-2" : "flex items-center gap-2"
                                         }
                                     >
-                                        UPCOMING
+                                        UPCOMING 
+                                        <span className='bg-red-500 rounded-full p-2 px-3 leading-[0px] text-white flex items-center justify-center'> <span><IoMdNotificationsOutline /></span>  {upcoming?.length}</span>
                                     </NavLink>
                                 </a>
                                 <a className="nav-item lg:my-1 xl:mx-3 flex items-center text-sm xl:text-base uppercase font-semibold  text-black dark:text-white hover:opacity-75 hover:rounded-full duration-300 ">
@@ -163,17 +176,6 @@ const Navbar = () => {
                                         MEALS
                                     </NavLink>
                                 </a>
-                                <a className="nav-item lg:my-1 xl:mx-3 flex items-center text-sm xl:text-base uppercase font-semibold  text-black dark:text-white hover:opacity-75 border-2 border-[#B3845A] rounded-md hover:rounded-full duration-300 ">
-                                    <NavLink
-                                        to="/add-product"
-                                        className={({ isActive, isPending }) =>
-                                            isPending ? "pending" : isActive ? "text-[#B3845A]" : ""
-                                        }
-                                    >
-                                        <p className='flex items-center mx-2 xl:mx-3 my-1 xl:my-2'><span className='text-xl md:text-2xl mr-2 '>+</span><span>ADD PRODUCT</span></p>
-                                    </NavLink>
-                                </a>
-
 
                                 <li className='flex items-center gap-3 lg:gap-6'>
                                     <div className=" flex rounded-full text-black dark:text-white duration-300">
@@ -247,7 +249,7 @@ const Navbar = () => {
                                                                                 </p>
                                                                             )}
                                                                             {!isAdmin && (
-                                                                                <Link to='dashboard'>
+                                                                                <Link to='dashboard/user/profile'>
                                                                                     <button
                                                                                         type="button"
                                                                                         className="text-sm xl:text-base font-semibold text-red-600 hover:text-red-900"
@@ -258,7 +260,7 @@ const Navbar = () => {
                                                                             )}
 
                                                                             {isAdmin && (
-                                                                                <Link to='admin/dashboard'>
+                                                                                <Link to='admin/dashboard/admin-profile'>
                                                                                     <button
                                                                                         type="button"
                                                                                         className="text-sm xl:text-base font-semibold text-red-600 hover:text-red-900"

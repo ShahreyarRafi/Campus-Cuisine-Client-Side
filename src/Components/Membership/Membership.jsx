@@ -18,10 +18,10 @@ const handleSelectPlan = (price) => {
 
   return (
     <>
-      <main className="max-w-6xl mx-auto pt-10 pb-36 px-8">
+      <main className="max-w-6xl mx-auto pt-10 pb-36 px-8 font-primary">
         <div className="max-w-md mx-auto mb-14 text-center">
           <h1 className="text-4xl font-semibold mb-6 lg:text-5xl">
-            <span className="text-indigo-600">Membership</span> Plans
+            <span className="text-[#B3845A]">Membership</span> Plans
           </h1>
           <p className="text-xl text-gray-500 font-medium">
             Choose a plan that works best for you.
@@ -69,10 +69,10 @@ const handleSelectPlan = (price) => {
                 </span>
               </li>
             </ul>
-            <Link to={`/dashboard/user/payment?checkout=${'Silver'}`} >
+            <Link to={`/payment?checkout=${'Silver'}`} >
               <a
                 href="#/"
-                className="flex justify-center items-center bg-indigo-600 rounded-xl py-5 px-4 text-center text-white text-xl"
+                className="flex justify-center items-center bg-[#B3845A] rounded-xl py-5 px-4 text-center text-white text-xl"
               >
                 Choose Plan
                 <img
@@ -127,10 +127,10 @@ const handleSelectPlan = (price) => {
                 </span>
               </li>
             </ul>
-            <Link to={`/dashboard/user/payment?checkout=${'Gold'}`} >
+            <Link to={`/payment?checkout=${'Gold'}`} >
               <a
                 href="#/"
-                className="flex justify-center items-center bg-indigo-600 rounded-xl py-5 px-4 text-center text-white text-xl"
+                className="flex justify-center items-center bg-[#B3845A] rounded-xl py-5 px-4 text-center text-white text-xl"
               >
                 Choose Plan
                 <img
@@ -182,10 +182,10 @@ const handleSelectPlan = (price) => {
                 </span>
               </li>
             </ul>
-            <Link to={`/dashboard/user/payment?checkout=${'Platinum'}`} >
+            <Link to={`/payment?checkout=${'Platinum'}`} >
               <a
                 href="#/"
-                className="flex justify-center items-center bg-indigo-600 rounded-xl py-5 px-4 text-center text-white text-xl"
+                className="flex justify-center items-center bg-[#B3845A] rounded-xl py-5 px-4 text-center text-white text-xl"
               >
                 Choose Plan
                 <img
